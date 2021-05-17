@@ -310,7 +310,7 @@ int main(int argc, char* argv[])
 	printf ("evalflag = %d, genflag = %d, gameflag = %d, mvalue = %s, hvalue = %s\n", evalflag, genflag, gameflag, mvalue, hvalue);
 	
 	for (index = optind; index < argc; index++)
-		printf ("Non-option argument %s\n", argv[index]);
+		printf ("Non-option argument %s\n\n\n", argv[index]);
 
 	//	return 0;
 	
