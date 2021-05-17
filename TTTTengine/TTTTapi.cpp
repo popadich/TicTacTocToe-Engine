@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <string.h>
 
-const char 					*const kDateTimeFormat = "%m/%d/%y %I:%M%p";
+//const char 	*const kDateTimeFormat = "%m/%d/%y %I:%M%p";
 
 
 //------------------------------------------------------------------
