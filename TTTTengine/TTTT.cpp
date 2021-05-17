@@ -265,8 +265,8 @@ xs_move machinemove(void)
 {
 	xs_move bestmove = kXS_UNDEFINED_MOVE;
 	xs_move trymove = kXS_UNDEFINED_MOVE;
-	int minscore;
-	int boardvalue;
+	long minscore;
+	long boardvalue;
 
 	if ( the_winner_is == kXS_NOBODY_PLAYER)
 	{

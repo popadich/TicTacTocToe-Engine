@@ -109,8 +109,8 @@ TTTT_Return	TTTT_GetWinnerStringRep(TTTT_GameBoardStringRep pszGameBoard)
 
 
 TTTT_Return TTTT_HumanMove(long aMove)
-{	
-	 if (humanmove(aMove) == aMove)
+{
+	 if (humanmove((int)aMove) == aMove)
 	 	return kTTTT_NoError;
 	
 	return kTTTT_InvalidMove;
@@ -135,10 +135,10 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 	char		*ptr, *buf;
 	int			tokens_count;
 	
-	int			h_arr[32];
-	int			m_arr[32];
+	long		h_arr[32];
+	long		m_arr[32];
 	
-	int			len = 0;
+	size_t		len = 0;
 	
 	if (pszGameBoard == NULL)
 		return kTTTT_InvalidArgument;
@@ -149,7 +149,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 		buf = (char *)malloc(4096);
 		strncpy(buf, humanMoves, len);
 		buf[len]='\0';
-		printf("\nhuman moves len: %d \nmoves: %s\n", len, humanMoves);
+		printf("\nhuman moves len: %ld \nmoves: %s\n", len, humanMoves);
 		
 		
 		tokens_count=0;
@@ -163,7 +163,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 		}
 		
 		for (j=0; j<tokens_count; j++) {
-			printf("h_arr is: %d \n", h_arr[j]);
+			printf("h_arr is: %ld \n", h_arr[j]);
 			pszGameBoard[h_arr[j]-1] = 'X';
 		}
 		if (buf) {
@@ -177,7 +177,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 		buf = (char *)malloc(4096);
 		strncpy(buf, machineMoves, len);
 		buf[len]='\0';
-		printf("\nmachine moves len: %d \nmoves: %s\n", len, machineMoves);
+		printf("\nmachine moves len: %ld \nmoves: %s\n", len, machineMoves);
 		
 		tokens_count=0;
 		if( (ptr = strtok(buf, " ")) != NULL ) {
@@ -190,7 +190,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 		}
 		
 		for (j=0; j<tokens_count; j++) {
-			printf("m_arr is: %d \n", m_arr[j]);
+			printf("m_arr is: %ld \n", m_arr[j]);
 			pszGameBoard[m_arr[j]-1] = 'O';
 		}
 		

@@ -321,8 +321,8 @@ int main(int argc, char* argv[])
 		generate_stringrep( hvalue, mvalue );
 	}
 	else if (evalflag) {
-		int myBoardValue = evaluate_stringrep(stringrep);
-		printf("Board Value is: %d\n\n", myBoardValue);
+		long myBoardValue = evaluate_stringrep(stringrep);
+		printf("Board Value is: %ld\n\n", myBoardValue);
 	}
 	return 0;
 }
