@@ -205,7 +205,7 @@ bool announce_winner(TTTT_Return aWinner)
 
 
 
-void interactive_mode()
+void interactive_mode(void)
 {
 	int							scanError;
 	// Game vars
