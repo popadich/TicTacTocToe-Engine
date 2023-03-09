@@ -3,7 +3,6 @@
  *  TTTTengine
  *
  *  Created by Alex Popadich on 4/5/10.
- *  Copyright (c) 2010 Alex Popadich.
  *
  *
  * Permission is hereby granted, free of charge, to any person
@@ -135,7 +134,7 @@ void generative_mode(TTTT_GameBoardStringRep pszGameBoard, char *human_moves)
 		
 		do
 		{
-			printf("\n\nPlease enter your move, or a '0' to quit!\n");
+			printf("\n\nEnter move (1-64), or any other char to quit!\n");
 			scanError = scanf ("%d",&aMove);
 			
 		} while (scanError != 1);
@@ -207,59 +206,59 @@ bool announce_winner(TTTT_Return aWinner)
 
 void interactive_mode(void)
 {
-	int							scanError;
+	int							scan_error;
 	// Game vars
 	TTTT_Return					result;
 	long						possibleWinner;
 	long						aMove;
-	bool						game_over = false;
+	bool						is_game_over = false;
 	
 	TTTT_Initialize();
-	print_board(game_over);
+	print_board(is_game_over);
 
 	
-	while( !game_over )
+	while( !is_game_over )
 	{
 		// human moves
-		if ( !game_over ) {
+		if ( !is_game_over ) {
 			
-			printf("\n\nPlease enter your move, or a '0' to quit!\n");
-			scanError = scanf ("%ld",&aMove);
-			if (scanError != 1) {
-				game_over = true;
+			printf("\n\nEnter move (1-64), or any other char to quit.\n");
+			scan_error = scanf ("%ld",&aMove);
+			if (scan_error != 1) {
+				is_game_over = true;
 				aMove = -1;
 			}
 			
-			if (aMove>0 && aMove <=64)
+			if (aMove>0 && aMove<=64)
 			{
 				printf("\nyour move is:  %ld\n", aMove);
 				if ( TTTT_HumanMove(aMove-1) == kTTTT_NoError )
 				{
 					result = TTTT_GetWinner(&possibleWinner);
-					game_over = announce_winner(possibleWinner);
+					is_game_over = announce_winner(possibleWinner);
 
 				}			
 				// display board
-				print_board(game_over);
+				print_board(is_game_over);
 			}
 			else
 			{
-				game_over = true;
+				is_game_over = true;
 				printf("Quitting...\n");
 			}
 		}
 		
 
 		// machine moves
-		if ( !game_over )
+		if ( !is_game_over )
 		{
 			result = TTTT_MacMove(&aMove);
 			printf("\ncomputer move is:  %ld\n", aMove+1);
 			result = TTTT_GetWinner(&possibleWinner);
-			game_over = announce_winner(possibleWinner);
+			is_game_over = announce_winner(possibleWinner);
 			
 			// display board
-			print_board(game_over);
+			print_board(is_game_over);
 		}
 	}
 }

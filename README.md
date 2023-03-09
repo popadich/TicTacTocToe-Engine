@@ -1,15 +1,15 @@
-** Please read me **
-
 ## TTTTengine project:
 
 This is the Tic Tac Toc Toe playing engine or just TTTTengine for short.
 
-A simple 3 dimensional tic-tac-toe like game that is played on a 4x4x4 grid and requires you to get four in a row to win.
+A simple 3 dimensional tic-tac-toe like game which is played on a 4x4x4 grid and requires you to get four in a row to win.
 
-It is made to compile both as an XCode project and with unix make.
+** Please read me **
+
+This code is meant to compile both on a Mac as an XCode project and on a Linux/Unix system with the unix make utility.
 
 
-## unix:
+### Linux/Unix:
 
 Assuming you have the proper devlopement tools installed, you should be able to cd to the project directory and type make.
 ```
@@ -25,7 +25,7 @@ Play a new game with:
 ```
 
 
-## Xcode:
+### Xcode:
 
 You have to set the argument on the executable otherwise there won't be much to see. 
 
@@ -38,6 +38,6 @@ Good luck with the build and have fun.
 Alex Popadich
 
 
-## License:
+#### License:
 
-Licensed under the MIT License: http://www.opensource.org/licenses/mit-licenses.php
+Licensed under the [MIT License](http://www.opensource.org/licenses/mit-licenses.php) 

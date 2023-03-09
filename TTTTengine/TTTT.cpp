@@ -6,7 +6,6 @@
  *  Purpose:    Engine for playing a 4x4x4 3D tic tac toe game.
  *
  *  Created by Alex Popadich on 4/5/10.
- *  Copyright (c) 2010 Alex Popadich
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
