@@ -52,11 +52,11 @@ void TTTT_Initialize(void)
 
 TTTT_Return TTTT_GetBoard( TTTT_GameBoardStringRep pszGameBoard )
 {
-	long						*gameBoard;
+//	long						*gameBoard;
 	TTTT_GameBoardStringRep		qszBoard;
 	
 	qszBoard[0]='\0';
-	gameBoard = (long *)getboard(qszBoard);
+	getboard(qszBoard);
 	
 	strncpy(pszGameBoard, qszBoard, kTTTT_StringRepMaxBufferLength);
 

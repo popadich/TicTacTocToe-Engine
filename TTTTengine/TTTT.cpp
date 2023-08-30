@@ -122,7 +122,7 @@ xs_winstable		the_wins_path_ids_table =
 
 
 
-#pragma mark LOCAL FUNCTIONS
+// MARK: LOCAL FUNCTIONS
 void setwinpath(int pathwinner)
 {
 	int	i;
@@ -188,9 +188,8 @@ void clearwinpath()
 
 
 
-#pragma mark -
-#pragma mark PUBLIC
 
+// MARK: - PUBLIC
 void initialize()
 {
 	initall();
@@ -289,8 +288,8 @@ xs_move machinemove(void)
 	return bestmove;
 }
 
-#pragma mark -
-#pragma mark BOARD SCORING
+
+// MARK: - BOARD SCORING
 
 // Move is 1 based 
 void count_human (xs_move aMove)
