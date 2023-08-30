@@ -42,7 +42,7 @@ void print_stringrep(char *theBoard)
 	
 	for(i=0; i<64; i++)
 	{
-		printf("%c ",theBoard[i]);		
+		printf("%c",theBoard[i]);		
 	}
 	
 	printf("\n");
@@ -77,7 +77,6 @@ void print_board_string(char *theBoard)
 		
 	}
 	
-	printf("\n");
 }
 
 void print_board(bool game_over)
@@ -263,6 +262,17 @@ void interactive_mode(void)
 	}
 }
 
+
+// play game
+//     tttt -p
+//
+// evaluate board stringrep
+//     tttt -e <stringrep>
+//
+// stringrep samples:
+// ......X......................................................OOX
+// X..X...........................................................O
+
 int main(int argc, char* argv[])
 {
 	int genflag = 0;
@@ -274,7 +284,7 @@ int main(int argc, char* argv[])
 	int index;
 	int c;
 
-		
+	
 	opterr = 0;
 	
 	while ((c = getopt (argc, argv, "pge:m:h:")) != -1)
@@ -311,7 +321,6 @@ int main(int argc, char* argv[])
 	for (index = optind; index < argc; index++)
 		printf ("Non-option argument %s\n\n\n", argv[index]);
 
-	//	return 0;
 	
 	if (gameflag) {
 		interactive_mode();

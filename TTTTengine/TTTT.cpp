@@ -225,7 +225,7 @@ xs_gameboard* getboard(char *pszBoard)
 		else if(the_board[the_move]==kXS_MACINTOSH_PLAYER)
 			pszBoard[the_move]='O';
 		else if(the_board[the_move]==kXS_NOBODY_PLAYER)
-			pszBoard[the_move]='_';
+			pszBoard[the_move]='.';
 	}
 	pszBoard[TTTT_BOARD_POSITIONS]='\0';
 	
