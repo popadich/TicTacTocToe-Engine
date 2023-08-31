@@ -3,16 +3,16 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		8DD76FAC0486AB0100D96B5E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.c */; settings = {ATTRIBUTES = (); }; };
 		8DD76FB00486AB0100D96B5E /* TTTTengine.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* TTTTengine.1 */; };
+		FA3D420A2AA102F8002391ED /* TTTTapi.c in Sources */ = {isa = PBXBuildFile; fileRef = FA3D42082AA102F8002391ED /* TTTTapi.c */; };
+		FA3D420B2AA102F8002391ED /* TTTT.c in Sources */ = {isa = PBXBuildFile; fileRef = FA3D42092AA102F8002391ED /* TTTT.c */; };
 		FA95AF12116A73DD00E2A051 /* TTTTapi.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA95AF10116A73DD00E2A051 /* TTTTapi.h */; };
-		FA95AF13116A73DD00E2A051 /* TTTTapi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA95AF11116A73DD00E2A051 /* TTTTapi.cpp */; };
 		FA95AF28116A761200E2A051 /* TTTT.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA95AF26116A761200E2A051 /* TTTT.h */; };
-		FA95AF29116A761200E2A051 /* TTTT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA95AF27116A761200E2A051 /* TTTT.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,10 +34,10 @@
 		08FB7796FE84155DC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		8DD76FB20486AB0100D96B5E /* TTTTengine */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TTTTengine; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A0FF2C0290799A04C91782 /* TTTTengine.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = TTTTengine.1; sourceTree = "<group>"; };
+		FA3D42082AA102F8002391ED /* TTTTapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TTTTapi.c; sourceTree = "<group>"; };
+		FA3D42092AA102F8002391ED /* TTTT.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TTTT.c; sourceTree = "<group>"; };
 		FA95AF10116A73DD00E2A051 /* TTTTapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTTapi.h; sourceTree = "<group>"; };
-		FA95AF11116A73DD00E2A051 /* TTTTapi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTTTapi.cpp; sourceTree = "<group>"; };
 		FA95AF26116A761200E2A051 /* TTTT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTT.h; sourceTree = "<group>"; };
-		FA95AF27116A761200E2A051 /* TTTT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTTT.cpp; sourceTree = "<group>"; };
 		FAA0F60313913F47008DB983 /* TTTTcommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTTcommon.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -65,12 +65,12 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				08FB7796FE84155DC02AAC07 /* main.c */,
 				FAA0F60313913F47008DB983 /* TTTTcommon.h */,
+				08FB7796FE84155DC02AAC07 /* main.c */,
 				FA95AF10116A73DD00E2A051 /* TTTTapi.h */,
-				FA95AF11116A73DD00E2A051 /* TTTTapi.cpp */,
+				FA3D42082AA102F8002391ED /* TTTTapi.c */,
 				FA95AF26116A761200E2A051 /* TTTT.h */,
-				FA95AF27116A761200E2A051 /* TTTT.cpp */,
+				FA3D42092AA102F8002391ED /* TTTT.c */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -118,7 +118,8 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1420;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
 			};
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "TTTTengine" */;
 			compatibilityVersion = "Xcode 3.0";
@@ -145,9 +146,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA3D420A2AA102F8002391ED /* TTTTapi.c in Sources */,
+				FA3D420B2AA102F8002391ED /* TTTT.c in Sources */,
 				8DD76FAC0486AB0100D96B5E /* main.c in Sources */,
-				FA95AF13116A73DD00E2A051 /* TTTTapi.cpp in Sources */,
-				FA95AF29116A761200E2A051 /* TTTT.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

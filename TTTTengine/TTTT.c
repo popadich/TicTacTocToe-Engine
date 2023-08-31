@@ -166,7 +166,7 @@ xs_player checkforwinners(void)
 
 
 // Blank out Count arrays which are 1's based
-void clearpathcounts()
+void clearpathcounts(void)
 {
 	int i;
 	
@@ -177,7 +177,7 @@ void clearpathcounts()
 	}
 }
 
-void clearwinpath()
+void clearwinpath(void)
 {
 	int i;
 	
@@ -190,21 +190,15 @@ void clearwinpath()
 
 
 // MARK: - PUBLIC
-void initialize()
+void initialize(void)
 {
-	initall();
+    the_winner_is = kXS_NOBODY_PLAYER;
+    initboard();
+    clearpathcounts();
+    clearwinpath();
 }
 
-
-void initall()
-{
-	the_winner_is = kXS_NOBODY_PLAYER;
-	initboard();
-	clearpathcounts();
-	clearwinpath();
-}
-
-void initboard()
+void initboard(void)
 {
 	xs_move the_move;
 	for (the_move=0; the_move<TTTT_BOARD_POSITIONS; the_move++)	{

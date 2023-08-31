@@ -1,9 +1,9 @@
-CC      =  g++
-CFLAGS  =  -c -Wall
+CC      =  gcc
+CFLAGS  =  -c -Wall 
 LDFLAGS = 
 LIBS = 
-SOURCES =  main.c TTTT.cpp  TTTTapi.cpp
-OBJECTS=$(SOURCES:.cpp=.o)
+SOURCES =  main.c TTTT.c TTTTapi.c
+OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=tttt
 
 all: $(SOURCES) $(EXECUTABLE)

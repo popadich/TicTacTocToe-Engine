@@ -208,7 +208,6 @@ void interactive_mode(void)
 {
 	int							scan_error;
 	// Game vars
-	TTTT_Return					result;
 	long						possibleWinner;
 	long						aMove;
 	bool						is_game_over = false;
@@ -234,7 +233,7 @@ void interactive_mode(void)
 				printf("\nyour move is:  %ld\n", aMove);
 				if ( TTTT_HumanMove(aMove-1) == kTTTT_NoError )
 				{
-					result = TTTT_GetWinner(&possibleWinner);
+					TTTT_GetWinner(&possibleWinner);
 					is_game_over = announce_winner(possibleWinner);
 
 				}			
@@ -252,9 +251,9 @@ void interactive_mode(void)
 		// machine moves
 		if ( !is_game_over )
 		{
-			result = TTTT_MacMove(&aMove);
+			TTTT_MacMove(&aMove);
 			printf("\ncomputer move is:  %ld\n", aMove+1);
-			result = TTTT_GetWinner(&possibleWinner);
+			TTTT_GetWinner(&possibleWinner);
 			is_game_over = announce_winner(possibleWinner);
 			
 			// display board
