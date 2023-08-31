@@ -29,6 +29,7 @@
 
 
 #include <unistd.h>
+#include <getopt.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
@@ -288,33 +289,36 @@ int main(int argc, char* argv[])
 	opterr = 0;
 	
 	while ((c = getopt (argc, argv, "pge:m:h:")) != -1)
-		switch (c)
 	{
-		case 'e':
-			evalflag= 1;
-			stringrep = optarg;
-			break;
-		case 'g':
-			genflag= 1;
-			break;
-		case 'p':
-			gameflag = 1;
-			break;
-		case 'm':
-			mvalue = optarg;
-			break;
-		case 'h':
-			hvalue = optarg;
-			break;
-		case '?':
-			if (isprint (optopt))
-				fprintf (stderr, "Unknown option `-%c'.\n", optopt);
-			else
-				fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
-			return 1;
-		default:
-			abort ();
-	}
+		switch (c)
+		{
+			case 'e':
+				evalflag= 1;
+				stringrep = optarg;
+				break;
+			case 'g':
+				genflag= 1;
+				break;
+			case 'p':
+				gameflag = 1;
+				break;
+			case 'm':
+				mvalue = optarg;
+				break;
+			case 'h':
+				hvalue = optarg;
+				break;
+			case '?':
+				if (isprint (optopt))
+					fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+				else
+					fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
+				return 1;
+			default:
+				abort ();
+		}
+
+	}	
 	
 	printf ("evalflag = %d, genflag = %d, gameflag = %d, mvalue = %s, hvalue = %s\n", evalflag, genflag, gameflag, mvalue, hvalue);
 	
