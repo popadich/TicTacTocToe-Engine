@@ -263,15 +263,19 @@ void interactive_mode(void)
 }
 
 
-// play game
+// PLAY INTERACTIVE GAME
 //     tttt -p
 //
-// evaluate board stringrep
+// EVALUATE BOARD STRINGREP
 //     tttt -e <stringrep>
 //
 // stringrep samples:
 // ......X......................................................OOX
 // X..X...........................................................O
+// O..XXXX........O.....O....................O.....................
+//
+// GENERATE BOARD REPRESENTATION STRING
+// ./tttt -g -h "4 5" -m "64 63"
 
 int main(int argc, char* argv[])
 {
@@ -287,7 +291,7 @@ int main(int argc, char* argv[])
 	
 	opterr = 0;
 	
-	while ((c = getopt (argc, argv, "pge:m:h:")) != -1)
+	while ((c = getopt (argc, argv, ":pge:m:h:")) != -1)
 	{
 		switch (c)
 		{
@@ -307,6 +311,9 @@ int main(int argc, char* argv[])
 			case 'h':
 				hvalue = optarg;
 				break;
+            case ':':
+                printf("Option '-%c' needs a value\n", optopt);
+                break;
 			case '?':
 				if (isprint (optopt))
 					fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -329,7 +336,15 @@ int main(int argc, char* argv[])
 		interactive_mode();
 	}
 	else if (genflag) {
-		generate_stringrep( hvalue, mvalue );
+        if (hvalue == NULL) {
+            printf("Human moves must be specified with '-h' option.\n");
+            return 1;
+        }
+        if (mvalue == NULL) {
+            printf("Machine moves must be specified with '-m' option.\n");
+            return 1;
+        }
+        generate_stringrep( hvalue, mvalue );
 	}
 	else if (evalflag) {
 		long myBoardValue = evaluate_stringrep(stringrep);
