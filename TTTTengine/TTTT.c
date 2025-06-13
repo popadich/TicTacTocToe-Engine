@@ -236,8 +236,19 @@ xs_move* getwinpath(void)
 	return the_winpath;
 }
 
+void setweights(xs_weighttab weights)
+{
+    long    i,j;
+    
+    for (i=0; i<TTTT_WEIGHT_MATRIX_SIZE; i++) {
+        for (j=0; j<TTTT_WEIGHT_MATRIX_SIZE; j++) {
+            the_weights[i][j] = weights[i][j];
+        }
+    }
+}
 
-// this is currently 0 based 
+
+// this is currently 0 based
 xs_move humanmove (xs_move aMove)
 {
 	xs_move move_made = kXS_UNDEFINED_MOVE;	

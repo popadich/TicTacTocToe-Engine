@@ -107,6 +107,23 @@ TTTT_Return	TTTT_GetWinnerStringRep(TTTT_GameBoardStringRep pszGameBoard)
 	return kTTTT_NoError;
 }
 
+TTTT_Return    TTTT_SetHeuristicWeights(int matrix[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE])
+{
+//    long    i,j;
+//
+//    printf("Set the heuristic matrix to:\n");
+//    for (i=0; i<5; i++) {
+//        for (j=0; j<5; j++) {
+//            printf("%d ",matrix[i][j]);
+//        }
+//    }
+//    printf("\n");
+    
+    setweights(matrix);
+    
+    return kTTTT_NoError;
+}
+
 
 TTTT_Return TTTT_HumanMove(long aMove)
 {

@@ -73,6 +73,7 @@ xs_move			machinemove(void);
 xs_gameboard* 	getboard(char *pszBoard);
 xs_player		getwinner(void);
 xs_move*		getwinpath(void);
+void            setweights(xs_weighttab weights);
 
 long			boardscore(xs_move aMove, xs_player currentPlayer);
 long			boardeval(xs_gameboard aBoard);
