@@ -187,12 +187,12 @@ xs_player checkforwinners(void)
 	
 	for (j=0; j<TTTT_WINNING_PATHS_COUNT; j++)
 	{			
-		if (the_path_counts_mac[j] == TTTT_FOUR_IN_A_ROW)
+		if (the_path_counts_mac[j] == TTTT_WIN_SIZE)
 		{
 			aWinner = kXS_MACINTOSH_PLAYER;
 			setwinpath(j);
 		}
-		if (the_path_counts_human[j] == TTTT_FOUR_IN_A_ROW)
+		if (the_path_counts_human[j] == TTTT_WIN_SIZE)
 		{
 			aWinner = kXS_HUMAN_PLAYER;
 			setwinpath(j);
@@ -269,7 +269,7 @@ xs_gameboard* getboard(char *pszBoard)
 		else if(the_board[the_move]==kXS_MACINTOSH_PLAYER)
 			pszBoard[the_move]='O';
 		else if(the_board[the_move]==kXS_NOBODY_PLAYER)
-			pszBoard[the_move]='.';
+			pszBoard[the_move]='_';
 	}
 	pszBoard[TTTT_BOARD_POSITIONS]='\0';
 	
@@ -297,6 +297,11 @@ void setweights(xs_weighttab weights)
         }
     }
 }
+
+void setrandomize(bool randomize){
+    randomized = randomize;
+}
+
 
 
 // this is currently 0 based
@@ -346,20 +351,21 @@ xs_move machinemove(void)
 }
 
 
-// MARK: - BOARD SCORING
+#pragma mark -
+#pragma mark BOARD SCORING
 
 // Move is 1 based 
 void count_human (xs_move aMove)
 {
 	int j;
-	int win_path;	
+	int win_path;
 	
-	for (j=0; j<TTTT_WINPATHSMAX; j++)
+	for (j=0; j<TTTT_PATHPARTICIPANT; j++)
 	{
 		win_path = the_wins_path_ids_table[aMove][j];
 		if (win_path >= 0)
 		{
-			the_path_counts_human[win_path] = the_path_counts_human[win_path] + 1;			
+			the_path_counts_human[win_path] = the_path_counts_human[win_path] + 1;
 		}
 	}
 }
@@ -370,7 +376,7 @@ void count_machine (xs_move aMove)
 	int	j;
 	int win_path;
 	
-	for (j=0; j<TTTT_WINPATHSMAX; j++)
+	for (j=0; j<TTTT_PATHPARTICIPANT; j++)
 	{
 		win_path = the_wins_path_ids_table[aMove][j];
 		if (win_path >= 0)

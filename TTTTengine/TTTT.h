@@ -46,12 +46,12 @@ typedef int xs_move;
 static const xs_move kXS_UNDEFINED_MOVE = -1;
 
 
-typedef int	xs_winstable[TTTT_BOARD_POSITIONS][TTTT_WINPATHSMAX];				// 0 based 0-63,0-6
-typedef int xs_weighttab[TTTT_FOUR_IN_A_ROW+1][TTTT_FOUR_IN_A_ROW+1];			// 0 based 0-4 we need 5 ok
+typedef int	xs_winstable[TTTT_BOARD_POSITIONS][TTTT_PATHPARTICIPANT];   // 0 based 0-63,0-6
+typedef int xs_weighttab[TTTT_WIN_SIZE+1][TTTT_WIN_SIZE+1];             // 0 based 0-4 we need 5 ok
 
 
-typedef xs_player	xs_gameboard[TTTT_BOARD_POSITIONS];							// 0 based 1-63
-typedef int			xs_pathcount[TTTT_WINNING_PATHS_COUNT];					// 0 based 1-75 
+typedef xs_player	xs_gameboard[TTTT_BOARD_POSITIONS];                 // 0 based 1-63
+typedef int			xs_pathcount[TTTT_WINNING_PATHS_COUNT];             // 0 based 1-75
 typedef xs_move		xs_winpath[TTTT_WIN_SIZE];
 
 //typedef xs_move *XSWinPath;

@@ -33,9 +33,8 @@
 #define TTTTCOMMON_H
 
 
-#define TTTT_WINPATHSMAX				7
+#define TTTT_PATHPARTICIPANT			7
 #define TTTT_WEIGHT_MATRIX_SIZE         5
-#define TTTT_FOUR_IN_A_ROW				4
 #define TTTT_WIN_SIZE			    	4
 #define TTTT_BOARD_POSITIONS			64
 #define TTTT_WINNING_PATHS_COUNT	    76
