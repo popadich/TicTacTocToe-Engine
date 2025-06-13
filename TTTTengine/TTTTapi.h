@@ -50,7 +50,7 @@ enum
 enum
 {
 	kTTTT_NOBODY		= 0,
-	kTTTT_MACHINETOSH	= 1,
+	kTTTT_MACHINE	    = 1,
 	kTTTT_HUMAN			= 2
 };
 
