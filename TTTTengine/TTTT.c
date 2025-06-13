@@ -30,26 +30,40 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>    // for random
+#include <stdbool.h>
 #include "TTTT.h"
 
+
+struct stack_structure{
+    xs_played_move stack_array[64];
+    long stack_pointer;
+};
+
 // LOCALS 
-xs_player		the_winner_is;
-xs_gameboard	the_board;
-xs_winpath		the_winpath;
-//xs_move			the_winpath[TTTT_WIN_PATH_SIZE];
-xs_pathcount	the_path_counts_mac;
-xs_pathcount	the_path_counts_human;
+xs_player the_winner_is;
+xs_gameboard the_board;
+xs_winpath the_winpath;
+xs_pathcount the_path_counts_mac;
+xs_pathcount the_path_counts_human;
+xs_weighttab the_weights;
+bool randomized = false;
+struct stack_structure firstpass_stack;
+struct stack_structure bestmoves_stack;
+struct stack_structure *st;
+struct stack_structure *bm;
 
 
-// the lower the score the better it is for the machine. 
-xs_weighttab		the_weights =
+// the lower the score the better it is for the machine.
+xs_weighttab default_weights =
 {
-{0,-2,-4,-8,-16},		 
+{0,-2,-4,-8,-16},
 {2,0,0,0,0},
 {4,0,1,0,0},
 {8,0,0,0,0},
 {16,0,0,0,0},
 };
+
 
 // the winning paths table is all 1 based at this time
 xs_winstable		the_wins_path_ids_table = 
@@ -121,8 +135,32 @@ xs_winstable		the_wins_path_ids_table =
 };
 
 
+#pragma mark  MOVE STACK
 
-// MARK: LOCAL FUNCTIONS
+void push_into_movestack(struct stack_structure *s,xs_played_move playedMove){
+    s -> stack_pointer++;
+    s -> stack_array[s -> stack_pointer] = playedMove;
+}
+
+bool pop_from_movestack(struct stack_structure *s,xs_played_move *no){
+    if (s -> stack_pointer >= 0) {
+        *no = s -> stack_array[s -> stack_pointer];
+        s -> stack_pointer--;
+        return 1;
+    }
+    return 0;
+}
+
+void clear_movestack(struct stack_structure *s){
+    s -> stack_pointer = -1;
+}
+
+long size_movestack(struct stack_structure *s){
+    return (s -> stack_pointer) + 1;
+}
+
+#pragma mark  -
+#pragma mark LOCAL FUNCTIONS
 void setwinpath(int pathwinner)
 {
 	int	i;
@@ -147,7 +185,7 @@ xs_player checkforwinners(void)
 
 	boardeval (the_board);		// this will populate the win path arrays
 	
-	for (j=0; j<TTTT_WINNING_POSITIONS_COUNT; j++)
+	for (j=0; j<TTTT_WINNING_PATHS_COUNT; j++)
 	{			
 		if (the_path_counts_mac[j] == TTTT_FOUR_IN_A_ROW)
 		{
@@ -170,8 +208,7 @@ void clearpathcounts(void)
 {
 	int i;
 	
-	for (i=0; i<TTTT_WINNING_POSITIONS_COUNT; i++ )	{
-		
+	for (i=0; i<TTTT_WINNING_PATHS_COUNT; i++ )	{
 		the_path_counts_human[i] = 0;	
 		the_path_counts_mac[i] = 0;	
 	}
@@ -181,31 +218,45 @@ void clearwinpath(void)
 {
 	int i;
 	
-	for (i=0; i<TTTT_WIN_PATH_SIZE; i++ )	{
+	for (i=0; i<TTTT_WIN_SIZE; i++ )	{
 		the_winpath[i] = 0;	
 	}
 }
 
 
 
+#pragma mark -
+#pragma mark PUBLIC
 
-// MARK: - PUBLIC
-void initialize(void)
-{
+void initboard(void) {
+    xs_move the_move;
+    for (the_move = 0; the_move < TTTT_BOARD_POSITIONS; the_move++) {
+        the_board[the_move] = kXS_NOBODY_PLAYER;
+    }
+}
+
+void initweights(void) {
+    long i, j;
+
+    for (i = 0; i < TTTT_WEIGHT_MATRIX_SIZE; i++) {
+        for (j = 0; j < TTTT_WEIGHT_MATRIX_SIZE; j++) {
+            the_weights[i][j] = default_weights[i][j];
+        }
+    }
+}
+
+void initialize(void) {
     the_winner_is = kXS_NOBODY_PLAYER;
     initboard();
+    initweights();
     clearpathcounts();
     clearwinpath();
+    //    randomized = true;
+    st = &firstpass_stack;
+    clear_movestack(st);
+    bm = &bestmoves_stack;
+    clear_movestack(bm);
 }
-
-void initboard(void)
-{
-	xs_move the_move;
-	for (the_move=0; the_move<TTTT_BOARD_POSITIONS; the_move++)	{
-		the_board[the_move] = kXS_NOBODY_PLAYER;
-	}
-}
-
 
 xs_gameboard* getboard(char *pszBoard)
 {
@@ -238,8 +289,8 @@ xs_move* getwinpath(void)
 
 void setweights(xs_weighttab weights)
 {
-    long    i,j;
-    
+    long i,j;
+
     for (i=0; i<TTTT_WEIGHT_MATRIX_SIZE; i++) {
         for (j=0; j<TTTT_WEIGHT_MATRIX_SIZE; j++) {
             the_weights[i][j] = weights[i][j];
@@ -264,6 +315,7 @@ xs_move humanmove (xs_move aMove)
 
 
 
+
 xs_move machinemove(void)
 {
 	xs_move bestmove = kXS_UNDEFINED_MOVE;
@@ -278,7 +330,7 @@ xs_move machinemove(void)
 		{
 			if (the_board[trymove] == kXS_NOBODY_PLAYER)
 			{
-				boardvalue = boardscore(trymove, kXS_MACINTOSH_PLAYER);
+				boardvalue = futureboardscore(trymove, kXS_MACINTOSH_PLAYER);
 				if (boardvalue < minscore)
 				{
 					minscore = boardvalue;
@@ -330,36 +382,36 @@ void count_machine (xs_move aMove)
 
 
 long boardeval (xs_gameboard aBoard) {
-	xs_move trymove = kXS_UNDEFINED_MOVE;
+	xs_move pieceposition = kXS_UNDEFINED_MOVE;
 	int i;
 	long total_score = 0;
 	
-		
 	clearpathcounts();
 	
-	for (trymove=0; trymove<TTTT_BOARD_POSITIONS; trymove++) {
-		if (aBoard[trymove] == kXS_MACINTOSH_PLAYER) {
-			count_machine(trymove);
+	for (pieceposition=0; pieceposition<TTTT_BOARD_POSITIONS; pieceposition++) {
+		if (aBoard[pieceposition] == kXS_MACINTOSH_PLAYER) {
+			count_machine(pieceposition);
 		}
-		else if (aBoard[trymove] == kXS_HUMAN_PLAYER) {
-			count_human(trymove);
+		else if (aBoard[pieceposition] == kXS_HUMAN_PLAYER) {
+			count_human(pieceposition);
 		}
 	}
 	
-	for (i=0; i<TTTT_WINNING_POSITIONS_COUNT; i++)
+	for (i=0; i<TTTT_WINNING_PATHS_COUNT; i++)
 	{
 		int HumPieces = the_path_counts_human[i];
 		int MacPieces = the_path_counts_mac[i];
 		total_score = the_weights[HumPieces][MacPieces] + total_score;
 	}
-	
+    //printf("Total score : %d\n",total_score);
+
 	return total_score;
 }
 
 
 // This routine scores only the mac's moves it should be more general 
 // the move is 0 based 
-long boardscore(xs_move aMove, xs_player currentPlayer)
+long futureboardscore(xs_move aMove, xs_player currentPlayer)
 {
 	xs_move			the_move;
 	xs_gameboard	dup_board_game;

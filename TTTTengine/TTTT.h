@@ -36,15 +36,13 @@
 #include "TTTTcommon.h"
 
 
-enum xs_player {
+typedef enum xs_player {
 	kXS_NOBODY_PLAYER = 0,
 	kXS_MACINTOSH_PLAYER,
 	kXS_HUMAN_PLAYER
-};
+} xs_player;
 
-typedef enum xs_player xs_player;
-
-typedef		 int xs_move;
+typedef int xs_move;
 static const xs_move kXS_UNDEFINED_MOVE = -1;
 
 
@@ -53,12 +51,16 @@ typedef int xs_weighttab[TTTT_FOUR_IN_A_ROW+1][TTTT_FOUR_IN_A_ROW+1];			// 0 bas
 
 
 typedef xs_player	xs_gameboard[TTTT_BOARD_POSITIONS];							// 0 based 1-63
-typedef int			xs_pathcount[TTTT_WINNING_POSITIONS_COUNT];					// 0 based 1-75 
-typedef xs_move		xs_winpath[TTTT_WIN_PATH_SIZE];
+typedef int			xs_pathcount[TTTT_WINNING_PATHS_COUNT];					// 0 based 1-75 
+typedef xs_move		xs_winpath[TTTT_WIN_SIZE];
 
 //typedef xs_move *XSWinPath;
 
-
+struct xs_played_move {
+    xs_move theMove;
+    long theScore;
+};
+typedef struct xs_played_move xs_played_move;
 
 // P R O T O T Y P E S
 void			initialize(void);
@@ -75,7 +77,7 @@ xs_player		getwinner(void);
 xs_move*		getwinpath(void);
 void            setweights(xs_weighttab weights);
 
-long			boardscore(xs_move aMove, xs_player currentPlayer);
+long			futureboardscore(xs_move aMove, xs_player currentPlayer);
 long			boardeval(xs_gameboard aBoard);
 
 #endif

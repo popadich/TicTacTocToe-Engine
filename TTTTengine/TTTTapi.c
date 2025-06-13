@@ -80,7 +80,7 @@ TTTT_Return	TTTT_GetWinnerPath(TTTT_WinnerMovesArr aWinnerPath)
 	
 	winpath = getwinpath();
 	
-	for (i=0; i<TTTT_WIN_PATH_SIZE; i++) {
+	for (i=0; i<TTTT_WIN_SIZE; i++) {
 		aWinnerPath[i] = winpath[i];
 	}
 		
@@ -97,7 +97,7 @@ TTTT_Return	TTTT_GetWinnerStringRep(TTTT_GameBoardStringRep pszGameBoard)
 		
 		winpath = getwinpath();
 		TTTT_GetBoard(pszGameBoard);
-		for (i=0; i<TTTT_WIN_PATH_SIZE; i++) {
+		for (i=0; i<TTTT_WIN_SIZE; i++) {
 			aSpace = winpath[i];
 			pszGameBoard[aSpace]= '*';
 		}

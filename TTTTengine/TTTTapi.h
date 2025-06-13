@@ -61,7 +61,7 @@ static const TTTT_Return	kTTTT_True = 1;
 static const int			kTTTT_Positions = TTTT_BOARD_POSITIONS;
 
 typedef char TTTT_GameBoardStringRep[kTTTT_StringRepMaxBufferLength];
-typedef int TTTT_WinnerMovesArr[TTTT_WIN_PATH_SIZE];
+typedef int TTTT_WinnerMovesArr[TTTT_WIN_SIZE];
 typedef int TTTT_WeightsTable[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE];        // 0 based 0-4 we need 5 ok
 
 
