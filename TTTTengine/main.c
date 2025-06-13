@@ -3,6 +3,7 @@
  *  TTTTengine
  *
  *  Created by Alex Popadich on 4/5/10.
+ *  Copyright (c) 2010 Alex Popadich.
  *
  *
  * Permission is hereby granted, free of charge, to any person
@@ -27,13 +28,13 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "TTTTapi.h"
 #include <ctype.h>
 #include <getopt.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "TTTTapi.h"
 
 // some local scoped globals
 bool quiteflag = false;
@@ -213,7 +214,7 @@ void generative_mode(TTTT_GameBoardStringRep pszGameBoard, char *human_moves) {
                 if (aWinner == kTTTT_NOBODY) {
                     aWinner = TTTT_GetWinner(&theWinner);
                 }
-                switch (aWinner) {
+                switch (theWinner) {
                 case kTTTT_MACHINE:
                     if (!quiteflag)
                         printf("\nGame Over:  Machine Wins\n");
@@ -270,6 +271,7 @@ bool announce_winner(TTTT_Return aWinner) {
     }
     return game_over;
 }
+
 bool human_moves(void) {
     bool game_over = false;
     int scanError;
@@ -331,8 +333,6 @@ void interactive_mode(const char *who_moves) {
     bool is_game_over = false;
     int first_player = kTTTT_HUMAN;
 
-
-
     TTTT_Initialize();
     if (setweightsflag) {
         TTTT_SetHeuristicWeights(new_weights);
@@ -349,7 +349,7 @@ void interactive_mode(const char *who_moves) {
             printf("I will go first, thank you very much.\n\n");
         first_player = kTTTT_MACHINE;
     }
-    
+
     if (first_player == kTTTT_HUMAN) {
         while (!is_game_over) {
             // human moves
@@ -418,54 +418,53 @@ int main(int argc, char *argv[]) {
     const char *stringrep = NULL;
     int index;
     int c;
-
     opterr = 0;
 
     while ((c = getopt(argc, argv, "gvqp:w:e:m:h:")) != -1) {
         switch (c) {
-        case 'e':
-            evalflag = 1;
-            stringrep = optarg;
-            break;
-        case 'g':
-            genflag = 1;
-            break;
-        case 'v':
-            verboseflag = true;
-            break;
-        case 'q':
-            quiteflag = true;
-            break;
-        case 'p':
-            playflag = 1;
-            whovalue = optarg;
-            break;
-        case 'w':
-            setweightsflag = true;
-            weightsmatrix = optarg;
-            set_weightsmatrix(weightsmatrix);
-            break;
-        case 'm':
-            mvalue = optarg;
-            break;
-        case 'h':
-            hvalue = optarg;
-            break;
-        case '?':
-            if (optopt == 'p')
-                fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-            else if (optopt == 'w')
-                fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-            else if (optopt == 'e')
-                fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-            else if (isprint(optopt)) {
-                fprintf(stderr, "Unknown option `-%c'.\n", optopt);
-                print_usage();
-            } else
-                fprintf(stderr, "Unknown option character `\\x%x'.\n", optopt);
-            return 1;
-        default:
-            abort();
+            case 'e':
+                evalflag = 1;
+                stringrep = optarg;
+                break;
+            case 'g':
+                genflag = 1;
+                break;
+            case 'v':
+                verboseflag = true;
+                break;
+            case 'q':
+                quiteflag = true;
+                break;
+            case 'p':
+                playflag = 1;
+                whovalue = optarg;
+                break;
+            case 'w':
+                setweightsflag = true;
+                weightsmatrix = optarg;
+                set_weightsmatrix(weightsmatrix);
+                break;
+            case 'm':
+                mvalue = optarg;
+                break;
+            case 'h':
+                hvalue = optarg;
+                break;
+            case '?':
+                if (optopt == 'p')
+                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+                else if (optopt == 'w')
+                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+                else if (optopt == 'e')
+                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+                else if (isprint(optopt)) {
+                    fprintf(stderr, "Unknown option `-%c'.\n", optopt);
+                    print_usage();
+                } else
+                    fprintf(stderr, "Unknown option character `\\x%x'.\n", optopt);
+                return 1;
+            default:
+                abort();
         }
     }
 
