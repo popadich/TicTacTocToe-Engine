@@ -29,10 +29,12 @@
  */
 
 
+
 #ifndef TTTTAPI_H
 #define TTTTAPI_H
 
 #include "TTTTcommon.h"
+#include <stdbool.h>
 
 #define kTTTT_StringRepMaxBufferLength		256
 #define export_dll
@@ -49,21 +51,20 @@ enum
 
 enum
 {
-	kTTTT_NOBODY		= 0,
-	kTTTT_MACHINE	    = 1,
-	kTTTT_HUMAN			= 2
+	kTTTT_NOBODY = 0,
+	kTTTT_MACHINE = 1,
+	kTTTT_HUMAN = 2
 };
 
 typedef long TTTT_Return;
+//static const TTTT_Return	kTTTT_False = 0;
+//static const TTTT_Return	kTTTT_True = 1;
 
-static const TTTT_Return	kTTTT_False = 0;
-static const TTTT_Return	kTTTT_True = 1;
-static const int			kTTTT_Positions = TTTT_BOARD_POSITIONS;
+static const long			kTTTT_Positions = TTTT_BOARD_POSITIONS;
 
 typedef char TTTT_GameBoardStringRep[kTTTT_StringRepMaxBufferLength];
-typedef int TTTT_WinnerMovesArr[TTTT_WIN_SIZE];
-typedef int TTTT_WeightsTable[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE];        // 0 based 0-4 we need 5 ok
-
+typedef long TTTT_WinnerMovesArr[TTTT_WIN_SIZE];
+typedef long TTTT_WeightsTable[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE]; // 0 based 0-4 we need 5 ok
 
 #ifdef __cplusplus 
 extern "C"
@@ -75,13 +76,15 @@ extern "C"
 	export_dll TTTT_Return	TTTT_GetWinner(long *aWinner);
 	export_dll TTTT_Return	TTTT_GetWinnerPath(TTTT_WinnerMovesArr aWinnerPath);
 	export_dll TTTT_Return	TTTT_GetWinnerStringRep(TTTT_GameBoardStringRep pszGameBoard);
-    export_dll TTTT_Return  TTTT_SetHeuristicWeights(int matrix[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE]);
+    export_dll TTTT_Return  TTTT_SetHeuristicWeights(long matrix[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE]);
+    export_dll TTTT_Return  TTTT_SetRandomize(bool randomize);
 	export_dll TTTT_Return 	TTTT_HumanMove(long aMove);
 	export_dll TTTT_Return 	TTTT_MacMove(long *aMove);
+    export_dll TTTT_Return  TTTT_UndoMove(long aMove);
 	export_dll TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTTT_GameBoardStringRep pszGameBoard);
 	export_dll TTTT_Return	TTTT_EvaluateBoardValue(const TTTT_GameBoardStringRep pszGameBoard, long *pValue);
 	
-	// More exotic data interfaces
+    // More exotic List data
 /*	export_dll TTTT_Return XS_TTTT_GetPositionAtIndex(long handleToData, long nIndex, long *plDataPosition);
 	export_dll TTTT_Return XS_TTTT_GetRequiredEdit(long handleToData, long nIndex, char pszRequirededit[kXS_MaxStringLength]);
 */

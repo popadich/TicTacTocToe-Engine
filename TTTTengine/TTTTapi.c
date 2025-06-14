@@ -34,10 +34,7 @@
 #include <stdio.h>
 #include <string.h>
 
-//const char 	*const kDateTimeFormat = "%m/%d/%y %I:%M%p";
-
-
-//------------------------------------------------------------------
+//const char                     *const kDateTimeFormat = "%m/%d/%y %I:%M%p";
 
 
 // Our Exported Function Wrappers
@@ -50,22 +47,33 @@ void TTTT_Initialize(void)
 
 // Getting properties
 
-TTTT_Return TTTT_GetBoard( TTTT_GameBoardStringRep pszGameBoard )
-{
-//	long						*gameBoard;
-	TTTT_GameBoardStringRep		qszBoard;
-	
-	qszBoard[0]='\0';
-	getboard(qszBoard);
-	
-	strncpy(pszGameBoard, qszBoard, kTTTT_StringRepMaxBufferLength);
+TTTT_Return TTTT_GetBoard(TTTT_GameBoardStringRep pszGameBoard) {
+    xs_gameboard *gameBoard;
+    TTTT_GameBoardStringRep qszBoard;
+    long i;
 
-	return kTTTT_NoError;
+    qszBoard[0] = '\0';
+    gameBoard = getboard(qszBoard);
+
+    char *charPointer = (char *)gameBoard;
+
+    for (i = 0; i < TTTT_BOARD_POSITIONS; i++) {
+        // printf("gameboard[%d] : %d\n",i, charPointer[i]);
+        if (charPointer[i] < kXS_NOBODY_PLAYER ||
+            charPointer[i] > kXS_HUMAN_PLAYER) {
+            printf("error: gameboard[%ld] : %c", i, charPointer[i]);
+            return kTTTT_InvalidMove;
+        }
+    }
+
+    strncpy(pszGameBoard, qszBoard, kTTTT_StringRepMaxBufferLength);
+
+    return kTTTT_NoError;
 }
 
 TTTT_Return TTTT_GetWinner(long *aWinner)
 {
-	long	 	winner;
+	long winner;
 	
 	winner = getwinner();
 	*aWinner = winner;
@@ -73,61 +81,75 @@ TTTT_Return TTTT_GetWinner(long *aWinner)
 	return kTTTT_NoError;
 }
 
-TTTT_Return	TTTT_GetWinnerPath(TTTT_WinnerMovesArr aWinnerPath)
-{
-	int	i;
-	int	*winpath;
-	
-	winpath = getwinpath();
-	
-	for (i=0; i<TTTT_WIN_SIZE; i++) {
-		aWinnerPath[i] = winpath[i];
-	}
-		
-	return kTTTT_NoError;
+TTTT_Return TTTT_GetWinnerPath(TTTT_WinnerMovesArr aWinnerPath) {
+    long i;
+    xs_winpath *winpath;
+    xs_move *winarray;
+
+    winpath = getwinpath();
+    winarray = *winpath;
+
+    for (i = 0; i < TTTT_WIN_SIZE; i++) {
+        aWinnerPath[i] = winarray[i];
+    }
+
+    return kTTTT_NoError;
 }
 
-TTTT_Return	TTTT_GetWinnerStringRep(TTTT_GameBoardStringRep pszGameBoard)
-{
-	int	i;
-	int	aSpace;
-	int *winpath;
-	
-	if (getwinner()) {
-		
-		winpath = getwinpath();
-		TTTT_GetBoard(pszGameBoard);
-		for (i=0; i<TTTT_WIN_SIZE; i++) {
-			aSpace = winpath[i];
-			pszGameBoard[aSpace]= '*';
-		}
+TTTT_Return TTTT_GetWinnerStringRep(TTTT_GameBoardStringRep pszGameBoard) {
+    long i;
+    long aSpace;
+    xs_winpath *winpath;
+    xs_move *winarray;
 
-		return kTTTT_NoError;
-	}
-	return kTTTT_NoError;
+    if (getwinner()) {
+
+        winpath = getwinpath();
+        winarray = *winpath;
+
+        TTTT_GetBoard(pszGameBoard);
+        for (i = 0; i < TTTT_WIN_SIZE; i++) {
+            aSpace = winarray[i];
+            pszGameBoard[aSpace] = '*';
+        }
+
+        return kTTTT_NoError;
+    }
+    return kTTTT_NoError;
 }
 
-TTTT_Return    TTTT_SetHeuristicWeights(int matrix[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE])
-{
-//    long    i,j;
-//
-//    printf("Set the heuristic matrix to:\n");
-//    for (i=0; i<5; i++) {
-//        for (j=0; j<5; j++) {
-//            printf("%d ",matrix[i][j]);
-//        }
-//    }
-//    printf("\n");
-    
+TTTT_Return TTTT_SetHeuristicWeights(
+    long matrix[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE]) {
+    //    long    i,j;
+    //
+    //    printf("Set the heuristic matrix to:\n");
+    //    for (i=0; i<5; i++) {
+    //        for (j=0; j<5; j++) {
+    //            printf("%d ",matrix[i][j]);
+    //        }
+    //    }
+    //    printf("\n");
+
     setweights(matrix);
+
+    return kTTTT_NoError;
+}
+
+TTTT_Return TTTT_SetRandomize(bool randomize) {
+    setrandomize(randomize);
     
     return kTTTT_NoError;
 }
 
+TTTT_Return TTTT_UndoMove(long aMove)
+{
+    undomove(aMove);
+    return kTTTT_NoError;
+}
 
 TTTT_Return TTTT_HumanMove(long aMove)
 {
-	 if (humanmove((int)aMove) == aMove)
+	 if (humanmove(aMove) == aMove)
 	 	return kTTTT_NoError;
 	
 	return kTTTT_InvalidMove;
@@ -140,6 +162,7 @@ TTTT_Return TTTT_MacMove(long *aMove)
 	long	theMove;
 	
 	theMove =  machinemove();
+    //theMove = machinemoverandomized();
 	*aMove = theMove;
 	 
 	return kTTTT_NoError;
@@ -148,14 +171,14 @@ TTTT_Return TTTT_MacMove(long *aMove)
 // this is a convenience function and does not involve an actual game play it is just a representation conversion
 TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTTT_GameBoardStringRep pszGameBoard)
 {
-	int			j;	
-	char		*ptr, *buf;
-	int			tokens_count;
-	
-	long		h_arr[32];
-	long		m_arr[32];
-	
-	size_t		len = 0;
+	long j;
+	char *ptr, *buf;
+	long tokens_count;
+
+	long h_arr[32];
+	long m_arr[32];
+
+    long len = 0;
 	
 	if (pszGameBoard == NULL)
 		return kTTTT_InvalidArgument;
@@ -176,7 +199,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 			while ( (ptr = strtok(NULL, " ")) != NULL ) {
 				h_arr[tokens_count] = strtol(ptr, NULL, 10);
 				tokens_count++;
-			} 	
+			}
 		}
 		
 		for (j=0; j<tokens_count; j++) {
@@ -203,7 +226,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 			while ( (ptr = strtok(NULL, " ")) != NULL ) {
 				m_arr[tokens_count] = strtol(ptr, NULL, 10);
 				tokens_count++;
-			} 	
+			}
 		}
 		
 		for (j=0; j<tokens_count; j++) {
@@ -222,9 +245,9 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 
 TTTT_Return	TTTT_EvaluateBoardValue(const TTTT_GameBoardStringRep pszGameBoard, long *pValue)
 {
-	xs_gameboard	aBoard;
-	int				i;
-	long			score;
+	xs_gameboard aBoard;
+	long i;
+	long score;
 	
 	for (i=0; i<TTTT_BOARD_POSITIONS; i++) {
 		if (pszGameBoard[i] == 'X') {

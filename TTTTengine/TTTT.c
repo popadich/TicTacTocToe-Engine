@@ -31,7 +31,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>    // for random
-#include <stdbool.h>
 #include "TTTT.h"
 
 
@@ -161,12 +160,12 @@ long size_movestack(struct stack_structure *s){
 
 #pragma mark  -
 #pragma mark LOCAL FUNCTIONS
-void setwinpath(int pathwinner)
+void setwinpath(long pathwinner)
 {
-	int	i;
-	int k;
+	long i;
+	long k;
 	
-	int tally = 0;
+	long tally = 0;
 	
 	for (i=0; i<TTTT_BOARD_POSITIONS; i++) {
 		for (k=0; k<7; k++) {
@@ -181,7 +180,7 @@ void setwinpath(int pathwinner)
 xs_player checkforwinners(void)
 {
 	xs_player aWinner = kXS_NOBODY_PLAYER;
-	int j;
+	long j;
 
 	boardeval (the_board);		// this will populate the win path arrays
 	
@@ -206,7 +205,7 @@ xs_player checkforwinners(void)
 // Blank out Count arrays which are 1's based
 void clearpathcounts(void)
 {
-	int i;
+	long i;
 	
 	for (i=0; i<TTTT_WINNING_PATHS_COUNT; i++ )	{
 		the_path_counts_human[i] = 0;	
@@ -216,7 +215,7 @@ void clearpathcounts(void)
 
 void clearwinpath(void)
 {
-	int i;
+	long i;
 	
 	for (i=0; i<TTTT_WIN_SIZE; i++ )	{
 		the_winpath[i] = 0;	
@@ -282,9 +281,9 @@ xs_player getwinner(void)
 	return the_winner_is;
 }
 
-xs_move* getwinpath(void)
+xs_winpath * getwinpath(void)
 {
-	return the_winpath;
+    return &the_winpath;
 }
 
 void setweights(xs_weighttab weights)
@@ -318,38 +317,103 @@ xs_move humanmove (xs_move aMove)
 	return move_made;		
 }
 
+xs_move machinemoverote(void) {
+    xs_move bestmove = kXS_UNDEFINED_MOVE;
+    xs_move trymove = kXS_UNDEFINED_MOVE;
+    long minscore;
+    long boardvalue;
 
+    if (the_winner_is == kXS_NOBODY_PLAYER) {
+        minscore = TTTT_VERY_BIG_BOARDVALUE;
+        for (trymove = 0; trymove < TTTT_BOARD_POSITIONS; trymove++) {
+            if (the_board[trymove] == kXS_NOBODY_PLAYER) {
+                boardvalue = futureboardscore(trymove, kXS_MACINTOSH_PLAYER);
+                if (boardvalue < minscore) {
+                    minscore = boardvalue;
+                    bestmove = trymove;
+                }
+            }
+        }
 
-
-xs_move machinemove(void)
-{
-	xs_move bestmove = kXS_UNDEFINED_MOVE;
-	xs_move trymove = kXS_UNDEFINED_MOVE;
-	long minscore;
-	long boardvalue;
-
-	if ( the_winner_is == kXS_NOBODY_PLAYER)
-	{
-		minscore = TTTT_VERY_BIG_BOARDVALUE;
-		for (trymove=0; trymove<TTTT_BOARD_POSITIONS; trymove++)
-		{
-			if (the_board[trymove] == kXS_NOBODY_PLAYER)
-			{
-				boardvalue = futureboardscore(trymove, kXS_MACINTOSH_PLAYER);
-				if (boardvalue < minscore)
-				{
-					minscore = boardvalue;
-					bestmove = trymove;
-				}
-			}
-		}
-
-		the_board[bestmove] = kXS_MACINTOSH_PLAYER;
-		the_winner_is = checkforwinners();
-	}
-	return bestmove;
+        the_board[bestmove] = kXS_MACINTOSH_PLAYER;
+        the_winner_is = checkforwinners();
+    }
+    return bestmove;
 }
 
+xs_move undomove(xs_move aMove) {
+    xs_move undomove = kXS_UNDEFINED_MOVE;
+
+    if (the_board[aMove] != kXS_NOBODY_PLAYER) {
+        the_board[aMove] = kXS_NOBODY_PLAYER;
+        undomove = aMove;
+    }
+
+    return undomove;
+}
+
+xs_move machinemoverandomized(void) {
+    xs_move bestmove = kXS_UNDEFINED_MOVE;
+    xs_move trymove = kXS_UNDEFINED_MOVE;
+    xs_played_move playedmove;
+    long minscore;
+    long boardvalue;
+
+    if (the_winner_is == kXS_NOBODY_PLAYER) {
+        minscore = TTTT_VERY_BIG_BOARDVALUE;
+        for (trymove = 0; trymove < TTTT_BOARD_POSITIONS; trymove++) {
+            if (the_board[trymove] == kXS_NOBODY_PLAYER) {
+                boardvalue = futureboardscore(trymove, kXS_MACINTOSH_PLAYER);
+                if (boardvalue <= minscore) {
+                    minscore = boardvalue;
+                    bestmove = trymove;
+                    playedmove.theScore = boardvalue;
+                    playedmove.theMove = trymove;
+                    push_into_movestack(st, playedmove);
+                }
+            }
+        }
+        xs_played_move goodmove;
+        xs_played_move evenmove;
+        if (pop_from_movestack(st, &goodmove)) {
+            push_into_movestack(bm, goodmove);
+        }
+        while (pop_from_movestack(st, &evenmove)) {
+            if (evenmove.theScore == goodmove.theScore) {
+                push_into_movestack(bm, evenmove);
+            }
+        }
+
+        // this stack should always conatin at least one move
+        // if the stack is empty it means big trouble
+        // printf("size: %d\n", size_movestack(bm));
+        long pickedmove = (arc4random() % size_movestack(bm)) + 1;
+        // printf("random pick: %d\n",pickedmove);
+
+        while (pop_from_movestack(bm, &goodmove) && pickedmove > 0) {
+            bestmove = goodmove.theMove;
+            pickedmove--;
+        }
+        //    printf("ERROR ERROR, This is a critical problem. No move can be
+        //    chosen by machine");
+
+        clear_movestack(bm);
+        clear_movestack(st);
+        the_board[bestmove] = kXS_MACINTOSH_PLAYER;
+        the_winner_is = checkforwinners();
+    }
+    return bestmove;
+}
+
+xs_move machinemove(void) {
+    xs_move themove;
+    if (randomized) {
+        themove = machinemoverandomized();
+    } else {
+        themove = machinemoverote();
+    }
+    return themove;
+}
 
 #pragma mark -
 #pragma mark BOARD SCORING
@@ -357,8 +421,8 @@ xs_move machinemove(void)
 // Move is 1 based 
 void count_human (xs_move aMove)
 {
-	int j;
-	int win_path;
+	long j;
+	long win_path;
 	
 	for (j=0; j<TTTT_PATHPARTICIPANT; j++)
 	{
@@ -373,8 +437,8 @@ void count_human (xs_move aMove)
 // Move is 0 based 
 void count_machine (xs_move aMove)
 {
-	int	j;
-	int win_path;
+	long j;
+	long win_path;
 	
 	for (j=0; j<TTTT_PATHPARTICIPANT; j++)
 	{
@@ -389,7 +453,7 @@ void count_machine (xs_move aMove)
 
 long boardeval (xs_gameboard aBoard) {
 	xs_move pieceposition = kXS_UNDEFINED_MOVE;
-	int i;
+	long i;
 	long total_score = 0;
 	
 	clearpathcounts();
@@ -405,8 +469,8 @@ long boardeval (xs_gameboard aBoard) {
 	
 	for (i=0; i<TTTT_WINNING_PATHS_COUNT; i++)
 	{
-		int HumPieces = the_path_counts_human[i];
-		int MacPieces = the_path_counts_mac[i];
+		long HumPieces = the_path_counts_human[i];
+		long MacPieces = the_path_counts_mac[i];
 		total_score = the_weights[HumPieces][MacPieces] + total_score;
 	}
     //printf("Total score : %d\n",total_score);
