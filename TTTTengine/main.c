@@ -51,32 +51,19 @@ void print_stringrep(char *theBoard) {
 }
 
 void print_board_stringrep(char *theBoard) {
-    int i;
+    int i, j;
     if (quiteflag) {
         return;
     }
     for (i = 0; i < 4; i++) {
-        printf("%c ", theBoard[i * 16 + 0]);
-        printf("%c ", theBoard[i * 16 + 1]);
-        printf("%c ", theBoard[i * 16 + 2]);
-        printf("%c \n", theBoard[i * 16 + 3]);
-
-        printf("%c ", theBoard[i * 16 + 4]);
-        printf("%c ", theBoard[i * 16 + 5]);
-        printf("%c ", theBoard[i * 16 + 6]);
-        printf("%c \n", theBoard[i * 16 + 7]);
-
-        printf("%c ", theBoard[i * 16 + 8]);
-        printf("%c ", theBoard[i * 16 + 9]);
-        printf("%c ", theBoard[i * 16 + 10]);
-        printf("%c \n", theBoard[i * 16 + 11]);
-
-        printf("%c ", theBoard[i * 16 + 12]);
-        printf("%c ", theBoard[i * 16 + 13]);
-        printf("%c ", theBoard[i * 16 + 14]);
-        printf("%c \n\n", theBoard[i * 16 + 15]);
+        for (j = 0; j < 16; j++) {
+            printf("%c ", theBoard[i * 16 + j]);
+            if ((j + 1) % 4 == 0) {
+                printf("\n");
+            }
+        }
+        printf("\n");
     }
-    printf("\n");
 }
 
 void print_board(bool game_over) {
@@ -275,24 +262,28 @@ bool announce_winner(TTTT_Return aWinner) {
 bool human_moves(void) {
     bool game_over = false;
     int scanError;
-    long aMove;
+    long aMove = -1;
     long possibleWinner;
-    TTTT_Return result;
 
     if (!quiteflag)
         printf("\n\nPlease enter a move [1-64], or a [0] to quit!\n");
 
-    scanError = scanf("%ld", &aMove);
-    if (scanError != 1) {
-        game_over = true;
-        aMove = -1;
+    while (1) {
+        scanError = scanf("%ld", &aMove);
+        if (scanError == 1 && aMove >= 0 && aMove <= 64) {
+            break; // Valid input
+        } else {
+            printf("Invalid input. Please enter a number between 1 and 64.\n");
+            // Clear the input buffer
+            while (getchar() != '\n');
+        }
     }
 
     if (aMove > 0 && aMove <= 64) {
         if (!quiteflag)
             printf("\nHuman move is:  %ld\n", aMove);
         if (TTTT_HumanMove(aMove - 1) == kTTTT_NoError) {
-            result = TTTT_GetWinner(&possibleWinner);
+            TTTT_GetWinner(&possibleWinner);
             game_over = announce_winner(possibleWinner);
         }
         // display board
@@ -309,17 +300,16 @@ bool human_moves(void) {
 bool machine_moves(void) {
     bool game_over = false;
 
-    TTTT_Return result;
     long possibleWinner;
     long aMove;
 
-    result = TTTT_MacMove(&aMove);
+    TTTT_MacMove(&aMove);
     if (!quiteflag)
         printf("\nMachine move is:  %ld\n", aMove + 1);
     else
         printf("%ld\n", aMove + 1);
 
-    result = TTTT_GetWinner(&possibleWinner);
+    TTTT_GetWinner(&possibleWinner);
     game_over = announce_winner(possibleWinner);
 
     // display board

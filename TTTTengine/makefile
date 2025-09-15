@@ -1,24 +1,32 @@
-CC      =  gcc
-CFLAGS  =  -c -Wall 
-LDFLAGS = 
-LIBS = 
-SOURCES =  main.c TTTT.c TTTTapi.c
-OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=tttt
+# Compiler and flags
+CC = gcc
+CFLAGS = -g -O2 -Wall -c
+LDFLAGS =
+LIBS =
 
-all: $(SOURCES) $(EXECUTABLE)
-	
+# Source files
+SOURCES = main.c TTTT.c TTTTapi.c
+
+# Object files
+OBJECTS = $(SOURCES:.c=.o)
+
+# Executable name
+EXECUTABLE = tttt
+
+# Default target
+all: $(EXECUTABLE)
+
+# Linking rule
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ $(LIBS)
 
-.cpp.o:
+# Compilation rule
+.c.o:
 	$(CC) $(CFLAGS) $< -o $@
 
-
+# Clean rule
 clean:
-	rm -rf *o tttt
+	rm -f $(OBJECTS) $(EXECUTABLE)
 
-
-relink:
-	@echo "relinking ..."
-	@$(CC)  $(CFLAGS)  -o $(EXECUTABLE)  $(OBJECTS)  $(LIBS)
+# Phony targets
+.PHONY: all clean
