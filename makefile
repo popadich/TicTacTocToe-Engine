@@ -4,8 +4,11 @@ CFLAGS = -g -O2 -Wall -c
 LDFLAGS =
 LIBS =
 
+# Source directory
+SRC_DIR = TTTTengine
+
 # Source files
-SOURCES = main.c TTTT.c TTTTapi.c
+SOURCES = $(SRC_DIR)/main.c $(SRC_DIR)/TTTT.c $(SRC_DIR)/TTTTapi.c
 
 # Object files
 OBJECTS = $(SOURCES:.c=.o)
