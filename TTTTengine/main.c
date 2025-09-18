@@ -507,8 +507,6 @@ int main(int argc, char *argv[]) {
     int evalflag = 0;
     int playflag = 0;
     const char *whovalue = NULL;
-    const char *mvalue = NULL;
-    const char *hvalue = NULL;
     const char *weightsmatrix = NULL;
     int index;
     opterr = 0;
@@ -577,8 +575,8 @@ int main(int argc, char *argv[]) {
         printf("evalflag = %d, genflag = %d, playflag = %d quiteflag = %d \n",
                evalflag, genflag, playflag, quiteflag);
     if (verboseflag)
-        printf("whovalue = %s, weightsmatrix = %s, mvalue = %s, hvalue = %s\n",
-               whovalue, weightsmatrix, mvalue, hvalue);
+        printf("whovalue = %s, weightsmatrix = %s, human_moves = %s, machine_moves = %s\n",
+               whovalue, weightsmatrix, args.human_moves, args.machine_moves);
     if (verboseflag) {
         for (index = optind; index < argc; index++)
             printf("Non-option argument %s\n\n\n", argv[index]);
@@ -621,11 +619,20 @@ int main(int argc, char *argv[]) {
         break;
     
     case MODE_GENERATE:
-        printf("Generate here\n");
+        if (args.human_moves == NULL) {
+            fprintf(stderr, "Human moves must be specified with '-h' option.\n");
+            exit(EXIT_FAILURE);
+        }
+        if (args.machine_moves == NULL) {
+            fprintf(stderr, "Machine moves must be specified with '-m' option.\n");
+            exit(EXIT_FAILURE);
+        }
+        generate_stringrep(args.human_moves, args.machine_moves);
         break;
 
     case MODE_TURN:
         printf("Make move here");
+        break;
 
     case MODE_HELP:
         print_usage();
