@@ -113,33 +113,30 @@ void set_weightsmatrix(const char *weightsmatrix) {
         &r5c1, &r5c2, &r5c3, &r5c4, &r5c5);
     if (scanError != 25) {
         printf("Problem with weights!\n");
-        printf("Matrix is: %d %d %d %d %d for first few numbers\n", r1c1, r1c2,
+        printf("Matrix is: %d %d %d %d %d for first row0\n", r1c1, r1c2,
                r1c3, r1c4, r1c5);
-        printf("Matrix is: %d %d %d %d %d for second few numbers\n", r2c1, r2c2,
+        printf("Matrix is: %d %d %d %d %d for second row\n", r2c1, r2c2,
                r2c3, r2c4, r2c5);
-        printf("Matrix is: %d %d %d %d %d for third few numbers\n", r3c1, r3c2,
+        printf("Matrix is: %d %d %d %d %d for third row\n", r3c1, r3c2,
                r3c3, r3c4, r3c5);
-        printf("Matrix is: %d %d %d %d %d for fourth few numbers\n", r4c1, r4c2,
+        printf("Matrix is: %d %d %d %d %d for fourth frown", r4c1, r4c2,
                r4c3, r4c4, r4c5);
-        printf("Matrix is: %d %d %d %d %d for fourth few numbers\n", r5c1, r5c2,
+        printf("Matrix is: %d %d %d %d %d for fourth row\n", r5c1, r5c2,
                r5c3, r5c4, r5c5);
     }
 
-    if (verboseflag)
-        printf("Matrix is: %d %d %d %d %d for first few numbers\n", r1c1, r1c2,
+    if (verboseflag) {
+        printf("Matrix is: %d %d %d %d %d for first row\n", r1c1, r1c2,
                r1c3, r1c4, r1c5);
-    if (verboseflag)
-        printf("Matrix is: %d %d %d %d %d for second few numbers\n", r2c1, r2c2,
+        printf("Matrix is: %d %d %d %d %d for second row\n", r2c1, r2c2,
                r2c3, r2c4, r2c5);
-    if (verboseflag)
-        printf("Matrix is: %d %d %d %d %d for third few numbers\n", r3c1, r3c2,
+        printf("Matrix is: %d %d %d %d %d for third row\n", r3c1, r3c2,
                r3c3, r3c4, r3c5);
-    if (verboseflag)
-        printf("Matrix is: %d %d %d %d %d for fourth few numbers\n", r4c1, r4c2,
+        printf("Matrix is: %d %d %d %d %d for fourth row\n", r4c1, r4c2,
                r4c3, r4c4, r4c5);
-    if (verboseflag)
-        printf("Matrix is: %d %d %d %d %d for fifth few numbers\n", r5c1, r5c2,
+        printf("Matrix is: %d %d %d %d %d for fifth row\n", r5c1, r5c2,
                r5c3, r5c4, r5c5);
+    }
 
     new_weights[0][0] = r1c1;
     new_weights[0][1] = r1c2;
@@ -503,14 +500,6 @@ tttt_args parse_arguments(int argc, char *argv[]) {
 // ./tttt -g -h "4 5" -m "64 63"
 
 int main(int argc, char *argv[]) {
-    int genflag = 0;
-    int evalflag = 0;
-    int playflag = 0;
-    const char *whovalue = NULL;
-    const char *weightsmatrix = NULL;
-    int index;
-    opterr = 0;
-
     if (argc <= 1) {
         print_usage();
         exit(EXIT_FAILURE);
@@ -518,95 +507,22 @@ int main(int argc, char *argv[]) {
 
     tttt_args args = parse_arguments(argc, argv);
 
-    /*
-    
-    while ((c = getopt(argc, argv, "gvqp:w:e:m:h:")) != -1) {
-        switch (c) {
-            case 'e':
-                evalflag = 1;
-                stringrep = optarg;
-                break;
-            case 'g':
-                genflag = 1;
-                break;
-            case 'v':
-                verboseflag = true;
-                break;
-            case 'q':
-                quiteflag = true;
-                break;
-            case 'p':
-                playflag = 1;
-                whovalue = optarg;
-                break;
-            case 'w':
-                setweightsflag = true;
-                weightsmatrix = optarg;
-                set_weightsmatrix(weightsmatrix);
-                break;
-            case 'm':
-                mvalue = optarg;
-                break;
-            case 'h':
-                hvalue = optarg;
-                break;
-            case '?':
-                if (optopt == 'p')
-                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-                else if (optopt == 'w')
-                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-                else if (optopt == 'e')
-                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-                else if (isprint(optopt)) {
-                    fprintf(stderr, "Unknown option `-%c'.\n", optopt);
-                    print_usage();
-                } else
-                    fprintf(stderr, "Unknown option character `\\x%x'.\n", optopt);
-                return 1;
-            default:
-                abort();
-        }
-    }
-
-    */
-
     // get verbose here for debugging
-    if (verboseflag)
-        printf("evalflag = %d, genflag = %d, playflag = %d quiteflag = %d \n",
-               evalflag, genflag, playflag, quiteflag);
-    if (verboseflag)
-        printf("whovalue = %s, weightsmatrix = %s, human_moves = %s, machine_moves = %s\n",
-               whovalue, weightsmatrix, args.human_moves, args.machine_moves);
-    if (verboseflag) {
-        for (index = optind; index < argc; index++)
-            printf("Non-option argument %s\n\n\n", argv[index]);
+     if (verboseflag) {
+        printf("mode = %d, quiteflag = %d \n", args.mode, quiteflag);
+        printf("who_moves = %s, weights_matrix = %s, machine_moves = %s, human_moves = %s\n",
+               args.who_moves, args.weights_matrix, args.machine_moves, args.human_moves);
+
     }
 
     if (setweightsflag == true) {
         set_weightsmatrix(args.weights_matrix);
     }
 
-    // if (playflag) {
-    //     interactive_mode(whovalue);
-    // } else if (genflag) {
-    //     if (hvalue == NULL) {
-    //         printf("Human moves must be specified with '-h' option.\n");
-    //         return 1;
-    //     }
-    //     if (mvalue == NULL) {
-    //         printf("Machine moves must be specified with '-m' option.\n");
-    //         return 1;
-    //     }
-    //     generate_stringrep(hvalue, mvalue);
-    // } else if (evalflag) {
-    //     long myBoardValue = evaluate_stringrep(stringrep);
-    //     printf("Board Value is: %ld\n\n", myBoardValue);
-    // }
-
     switch (args.mode)
     {
     case MODE_PLAY:
-        printf("Play here");
+        interactive_mode(args.who_moves);
         break;
 
     case MODE_EVALUATE:
