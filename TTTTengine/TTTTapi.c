@@ -118,26 +118,13 @@ TTTT_Return TTTT_GetWinnerStringRep(TTTT_GameBoardStringRep pszGameBoard) {
     return kTTTT_NoError;
 }
 
-TTTT_Return TTTT_SetHeuristicWeights(
-    long matrix[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE]) {
-    //    long    i,j;
-    //
-    //    printf("Set the heuristic matrix to:\n");
-    //    for (i=0; i<5; i++) {
-    //        for (j=0; j<5; j++) {
-    //            printf("%d ",matrix[i][j]);
-    //        }
-    //    }
-    //    printf("\n");
-
+TTTT_Return TTTT_SetHeuristicWeights(long matrix[TTTT_WEIGHT_MATRIX_SIZE][TTTT_WEIGHT_MATRIX_SIZE]) {
     setweights(matrix);
-
     return kTTTT_NoError;
 }
 
 TTTT_Return TTTT_SetRandomize(bool randomize) {
     setrandomize(randomize);
-    
     return kTTTT_NoError;
 }
 
@@ -267,4 +254,24 @@ TTTT_Return	TTTT_EvaluateBoardValue(const TTTT_GameBoardStringRep pszGameBoard, 
 	return kTTTT_NoError;
 }
 
+
+TTTT_Return TTTT_SetBoard(const TTTT_GameBoardStringRep pszGameBoard)
+{
+    xs_gameboard aBoard;
+    long i;
+
+    for (i=0; i<TTTT_BOARD_POSITIONS; i++) {
+        if (pszGameBoard[i] == 'X') {
+            aBoard[i] = kXS_HUMAN_PLAYER;
+        }
+        else if (pszGameBoard[i] == 'O') {
+            aBoard[i] = kXS_MACINTOSH_PLAYER;
+        }
+        else {
+            aBoard[i] = kXS_NOBODY_PLAYER;
+        }
+    }
+    setboard(aBoard);
+    return kTTTT_NoError;
+}
 

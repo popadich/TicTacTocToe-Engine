@@ -490,3 +490,7 @@ void TTTT_clone_board(xs_gameboard dest, const xs_gameboard src) {
         dest[i] = src[i];
     }
 }
+
+void setboard(xs_gameboard new_board) {
+    TTTT_clone_board(the_board, new_board);
+}

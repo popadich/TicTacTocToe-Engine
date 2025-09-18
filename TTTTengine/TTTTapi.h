@@ -57,10 +57,8 @@ enum
 };
 
 typedef long TTTT_Return;
-//static const TTTT_Return	kTTTT_False = 0;
-//static const TTTT_Return	kTTTT_True = 1;
 
-static const long			kTTTT_Positions = TTTT_BOARD_POSITIONS;
+static const long kTTTT_Positions = TTTT_BOARD_POSITIONS;
 
 typedef char TTTT_GameBoardStringRep[kTTTT_StringRepMaxBufferLength];
 typedef long TTTT_WinnerMovesArr[TTTT_WIN_SIZE];
@@ -73,6 +71,7 @@ extern "C"
 	// TTTT interfaces
 	export_dll void 		TTTT_Initialize(void);
 	export_dll TTTT_Return 	TTTT_GetBoard(TTTT_GameBoardStringRep pszGameBoard);
+	export_dll TTTT_Return	TTTT_SetBoard(const TTTT_GameBoardStringRep pszGameBoard);
 	export_dll TTTT_Return	TTTT_GetWinner(long *aWinner);
 	export_dll TTTT_Return	TTTT_GetWinnerPath(TTTT_WinnerMovesArr aWinnerPath);
 	export_dll TTTT_Return	TTTT_GetWinnerStringRep(TTTT_GameBoardStringRep pszGameBoard);

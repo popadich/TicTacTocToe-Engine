@@ -67,7 +67,10 @@ TTTT_WeightsTable new_weights;
 void print_stringrep(char *theBoard) {
     int i = 0;
     for (i = 0; i < 64; i++) {
-        printf("%c ", theBoard[i]);
+        if (theBoard[i] == '_')
+            printf(".");
+        else
+            printf("%c", theBoard[i]);
     }
     printf("\n");
 }
@@ -390,16 +393,43 @@ void interactive_mode(const char *who_moves) {
     }
 }
 
-void print_usage(void) {
-    fprintf(stderr, "Usage:  \n");
-    fprintf(stderr, "  Evaluate: tttt -e <stringrep>\n");
-    fprintf(stderr, "  Generate: tttt -g <-h \"list\"> <-m \"list\">\n");
-    fprintf(stderr,
-            "  Play:     tttt -p <\"h\"|\"m\"> [-vq] [-w weights_matrix] \n");
+void turn_mode(const char *who_moves, const char *string_rep) {
+    TTTT_Initialize();
+    if (setweightsflag) {
+        TTTT_SetHeuristicWeights(new_weights);
+    }
+    TTTT_SetBoard(string_rep);
 
-    fprintf(stderr, "Examples: \n");
-    fprintf(stderr, "  Play:     tttt -p \"h\" -w \"0 -2 -5 -11 -27 2 0 3 12 0 "
-                    "5 -3 1 0 0 11 -12 0 0 0 23 0 0 0 0\" \n");
+    TTTT_GameBoardStringRep pszGameBoard;
+    TTTT_GetBoard(pszGameBoard);
+    print_stringrep(pszGameBoard);
+
+    // Do one move ahead based on who's turn it is
+    
+}
+
+
+void print_usage(void) {
+    fprintf(stderr, "Usage: tttt [options]\n");
+    fprintf(stderr, "Options:\n");
+    fprintf(stderr, "  -e, --evaluate <stringrep>   Evaluate a board string representation.\n");
+    fprintf(stderr, "  -g, --generate               Generate a board string representation.\n");
+    fprintf(stderr, "  -p, --play <h|m>             Play an interactive game.\n");
+    fprintf(stderr, "  -t, --turn <h|m> <stringrep> Get next move for a given board state.\n");
+    fprintf(stderr, "  -w, --weights <matrix>       Set the heuristic weights.\n");
+    fprintf(stderr, "  -m, --machine-moves <list>   List of machine moves for generation.\n");
+    fprintf(stderr, "  -h, --human-moves <list>     List of human moves for generation.\n");
+    fprintf(stderr, "  -v, --verbose                Enable verbose output.\n");
+    fprintf(stderr, "  -q, --quiet                  Suppress all output.\n");
+    fprintf(stderr, "      --help                   Display this help and exit.\n");
+    fprintf(stderr, "      --version                Output version information and exit.\n");
+
+    fprintf(stderr, "Examples:\n");
+    fprintf(stderr, "  tttt -p \"h\" -w \"0 -2 -5 -11 -27 2 0 3 12 0 5 -3 1 0 0 11 -12 0 0 0 23 0 0 0 0\"\n");
+    fprintf(stderr, "  tttt -p h\n");
+    fprintf(stderr, "  tttt -g -h \"4 5\" -m \"64 63\"\n");
+    fprintf(stderr, "  tttt -e \"......X......................................................OOX\"\n");
+
 }
 
 tttt_args parse_arguments(int argc, char *argv[]) {
@@ -547,7 +577,11 @@ int main(int argc, char *argv[]) {
         break;
 
     case MODE_TURN:
-        printf("Make move here");
+        if (args.who_moves == NULL || args.string_rep == NULL) {
+            fprintf(stderr, "Turn mode requires who moves and board string representation.\n");
+            exit(EXIT_FAILURE);
+        }
+        turn_mode(args.who_moves, args.string_rep);
         break;
 
     case MODE_HELP:

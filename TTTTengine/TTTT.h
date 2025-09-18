@@ -74,7 +74,7 @@ xs_player getwinner(void);
 xs_winpath *getwinpath(void);
 void setweights(xs_weighttab weights);
 void setrandomize(bool randomize);
-
+void setboard(xs_gameboard new_board);
 long futureboardscore(xs_move aMove, xs_player currentPlayer);
 long boardeval(xs_gameboard aBoard);
 
