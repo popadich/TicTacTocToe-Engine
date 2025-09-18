@@ -50,6 +50,12 @@ To play the game in interactive mode, use the `-p` flag and specify who moves fi
 ./tttt -p h
 ```
 
+Or play with different heurisitic weights:
+
+```bash
+./tttt -p "h" -w "0 -2 -5 -11 -27 2 0 3 12 0 5 -3 1 0 0 11 -12 0 0 0 23 0 0 0 0"
+```
+
 ### Other Modes
 
 *   **Generate Board String Representation:**

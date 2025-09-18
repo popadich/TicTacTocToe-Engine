@@ -34,7 +34,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include "TTTTapi.h"
+
+#define TTTT_VERSION "1.0"
+
+typedef enum {
+    MODE_NONE,
+    MODE_PLAY,
+    MODE_EVALUATE,
+    MODE_GENERATE,
+    MODE_TURN,
+    MODE_HELP,
+    MODE_VERSION
+} tttt_mode;
+
+typedef struct {
+    tttt_mode mode;
+    const char *who_moves;
+    const char *machine_moves;
+    const char *human_moves;
+    const char *weights_matrix;
+    const char *string_rep;
+} tttt_args;
 
 // some local scoped globals
 bool quiteflag = false;
@@ -383,6 +405,89 @@ void print_usage(void) {
                     "5 -3 1 0 0 11 -12 0 0 0 23 0 0 0 0\" \n");
 }
 
+tttt_args parse_arguments(int argc, char *argv[]) {
+    tttt_args args = { .mode = MODE_NONE };
+    int c;
+
+    static struct option long_options[] = {
+        {"evaluate",      required_argument, 0, 'e'},
+        {"generate",      no_argument,       0, 'g'},
+        {"play",          required_argument, 0, 'p'},
+        {"turn",          required_argument, 0, 't'},
+        {"weights",       required_argument, 0, 'w'},
+        {"machine-moves", required_argument, 0, 'm'},
+        {"human-moves",   required_argument, 0, 'h'},
+        {"verbose",       no_argument,       0, 'v'},
+        {"quiet",         no_argument,       0, 'q'},
+        {"help",          no_argument,       0, 0},
+        {"version",       no_argument,       0, 0},
+        {0, 0, 0, 0}
+    };
+
+    while (1) {
+        int option_index = 0;
+        c = getopt_long(argc, argv, "e:gp:t:w:m:h:vq", long_options, &option_index);
+
+        if (c == -1)
+            break;
+
+        switch (c) {
+            case 0:
+                if (strcmp(long_options[option_index].name, "help") == 0) {
+                    args.mode = MODE_HELP;
+                } else if (strcmp(long_options[option_index].name, "version") == 0) {
+                    args.mode = MODE_VERSION;
+                }
+                break;
+            case 'e':
+                args.mode = MODE_EVALUATE;
+                args.string_rep = optarg;
+                break;
+            case 'g':
+                args.mode = MODE_GENERATE;
+                break;
+            case 'p':
+                args.mode = MODE_PLAY;
+                args.who_moves = optarg;
+                break;
+            case 't':
+                args.mode = MODE_TURN;
+                args.who_moves = optarg;
+                if (optind < argc && argv[optind][0] != '-') {
+                    args.string_rep = argv[optind];
+                    optind++;
+                } else {
+                    fprintf(stderr, "Option -t requires two arguments: [whofirst] and [boardstringrep]\n");
+                    print_usage();
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case 'w':
+                setweightsflag = true;
+                args.weights_matrix = optarg;
+                break;
+            case 'm':
+                args.machine_moves = optarg;
+                break;
+            case 'h':
+                args.human_moves = optarg;
+                break;
+            case 'v':
+                verboseflag = true;
+                break;
+            case 'q':
+                quiteflag = true;
+                break;
+            case '?':
+                exit(EXIT_FAILURE);
+            default:
+                abort();
+        }
+    }
+    return args;
+}
+
+
 // PLAY INTERACTIVE GAME
 //     tttt -p
 //
@@ -405,11 +510,18 @@ int main(int argc, char *argv[]) {
     const char *mvalue = NULL;
     const char *hvalue = NULL;
     const char *weightsmatrix = NULL;
-    const char *stringrep = NULL;
     int index;
-    int c;
     opterr = 0;
 
+    if (argc <= 1) {
+        print_usage();
+        exit(EXIT_FAILURE);
+    }
+
+    tttt_args args = parse_arguments(argc, argv);
+
+    /*
+    
     while ((c = getopt(argc, argv, "gvqp:w:e:m:h:")) != -1) {
         switch (c) {
             case 'e':
@@ -458,6 +570,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    */
+
     // get verbose here for debugging
     if (verboseflag)
         printf("evalflag = %d, genflag = %d, playflag = %d quiteflag = %d \n",
@@ -470,21 +584,63 @@ int main(int argc, char *argv[]) {
             printf("Non-option argument %s\n\n\n", argv[index]);
     }
 
-    if (playflag) {
-        interactive_mode(whovalue);
-    } else if (genflag) {
-        if (hvalue == NULL) {
-            printf("Human moves must be specified with '-h' option.\n");
-            return 1;
+    if (setweightsflag == true) {
+        set_weightsmatrix(args.weights_matrix);
+    }
+
+    // if (playflag) {
+    //     interactive_mode(whovalue);
+    // } else if (genflag) {
+    //     if (hvalue == NULL) {
+    //         printf("Human moves must be specified with '-h' option.\n");
+    //         return 1;
+    //     }
+    //     if (mvalue == NULL) {
+    //         printf("Machine moves must be specified with '-m' option.\n");
+    //         return 1;
+    //     }
+    //     generate_stringrep(hvalue, mvalue);
+    // } else if (evalflag) {
+    //     long myBoardValue = evaluate_stringrep(stringrep);
+    //     printf("Board Value is: %ld\n\n", myBoardValue);
+    // }
+
+    switch (args.mode)
+    {
+    case MODE_PLAY:
+        printf("Play here");
+        break;
+
+    case MODE_EVALUATE:
+        if (args.string_rep == NULL) {
+            fprintf(stderr, "Board string representation must be specified with '-e' option.\n");
+            exit(EXIT_FAILURE);
         }
-        if (mvalue == NULL) {
-            printf("Machine moves must be specified with '-m' option.\n");
-            return 1;
-        }
-        generate_stringrep(hvalue, mvalue);
-    } else if (evalflag) {
-        long myBoardValue = evaluate_stringrep(stringrep);
+        long myBoardValue = evaluate_stringrep(args.string_rep);
         printf("Board Value is: %ld\n\n", myBoardValue);
+        break;
+    
+    case MODE_GENERATE:
+        printf("Generate here\n");
+        break;
+
+    case MODE_TURN:
+        printf("Make move here");
+
+    case MODE_HELP:
+        print_usage();
+        break;
+
+    case MODE_VERSION:
+        printf("tttt version %s\n", TTTT_VERSION);
+        break;
+
+    case MODE_NONE:
+        print_usage();
+        break;
+
+    default:
+        break;
     }
     return 0;
 }
