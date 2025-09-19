@@ -81,7 +81,9 @@ extern "C"
 	export_dll TTTT_Return 	TTTT_MacMove(long *aMove);
     export_dll TTTT_Return  TTTT_UndoMove(long aMove);
 	export_dll TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTTT_GameBoardStringRep pszGameBoard);
+	export_dll TTTT_Return  TTTT_MakeStringRep(const int whoMoves, const long aMove, const TTTT_GameBoardStringRep pszOldRep, TTTT_GameBoardStringRep pszNewRep);
 	export_dll TTTT_Return	TTTT_EvaluateBoardValue(const TTTT_GameBoardStringRep pszGameBoard, long *pValue);
+	export_dll TTTT_Return	TTTT_GetBestMove(int player, long *aMove);
 	
     // More exotic List data
 /*	export_dll TTTT_Return XS_TTTT_GetPositionAtIndex(long handleToData, long nIndex, long *plDataPosition);

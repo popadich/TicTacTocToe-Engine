@@ -80,5 +80,6 @@ long boardeval(xs_gameboard aBoard);
 
 // Board copy utility for look-ahead
 void TTTT_clone_board(xs_gameboard dest, const xs_gameboard src);
+int choosemove(xs_gameboard board, int player);
 
 #endif

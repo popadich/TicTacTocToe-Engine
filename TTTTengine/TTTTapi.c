@@ -34,6 +34,51 @@
 #include <stdio.h>
 #include <string.h>
 
+// Implements TTTT_MakeStringRep
+// whoMoves: which player (kTTTT_HUMAN or kTTTT_MACHINE)
+// aMove: move index (0-based)
+// pszOldRep: input board string representation (length >= TTTT_BOARD_POSITIONS)
+// pszNewRep: output board string representation (buffer must be large enough)
+TTTT_Return TTTT_MakeStringRep(const int whoMoves, const long aMove, const TTTT_GameBoardStringRep pszOldRep, TTTT_GameBoardStringRep pszNewRep)
+{
+	// Validate arguments
+	if (!pszOldRep || !pszNewRep) {
+		return kTTTT_InvalidArgument;
+	}
+	if (aMove < 0 || aMove >= kTTTT_Positions) {
+		return kTTTT_InvalidArgumentOutOfRange;
+	}
+
+	// Copy old rep to new rep
+	size_t len = strlen(pszOldRep);
+	// Defensive: ensure we copy at least kTTTT_Positions chars, but not more than buffer
+	size_t copylen = (len > kTTTT_Positions) ? kTTTT_Positions : len;
+	memcpy(pszNewRep, pszOldRep, copylen);
+	// If pszOldRep is shorter, fill the rest with '_'
+	for (size_t i = copylen; i < kTTTT_Positions; ++i) {
+		pszNewRep[i] = '.';
+	}
+	pszNewRep[kTTTT_Positions] = '\0';
+
+	// Set the move for the player
+	char mark = '.';
+	if (whoMoves == kTTTT_HUMAN) {
+		mark = 'X';
+	} else if (whoMoves == kTTTT_MACHINE) {
+		mark = 'O';
+	} else {
+		return kTTTT_InvalidArgument;
+	}
+
+	// Only allow move if position is empty
+	if (pszNewRep[aMove] != '.') {
+		return kTTTT_InvalidMove;
+	}
+	pszNewRep[aMove] = mark;
+
+	return kTTTT_NoError;
+}
+
 //const char                     *const kDateTimeFormat = "%m/%d/%y %I:%M%p";
 
 
@@ -275,3 +320,16 @@ TTTT_Return TTTT_SetBoard(const TTTT_GameBoardStringRep pszGameBoard)
     return kTTTT_NoError;
 }
 
+// Sets a zero based index for best location on the board
+// to place a piece.
+TTTT_Return TTTT_GetBestMove(int player, long *aMove)
+{
+    xs_gameboard *aBoard;
+	TTTT_GameBoardStringRep pszGameBoard;
+    long best_move_idx = -1;
+
+    aBoard = getboard(pszGameBoard);
+    best_move_idx = choosemove(*aBoard, player);
+    *aMove = best_move_idx;
+    return kTTTT_NoError;
+}

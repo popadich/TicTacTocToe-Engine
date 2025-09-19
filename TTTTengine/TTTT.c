@@ -248,6 +248,8 @@ void initialize(void) {
     clear_movestack(bm);
 }
 
+// Gets a pointer to the board array, and fills a string representation of the board in a string.
+// This should be split into two different functions.
 xs_gameboard* getboard(char *pszBoard)
 {
     xs_move the_move;
@@ -493,4 +495,31 @@ void TTTT_clone_board(xs_gameboard dest, const xs_gameboard src) {
 
 void setboard(xs_gameboard new_board) {
     TTTT_clone_board(the_board, new_board);
+}
+
+int choosemove(xs_gameboard board, int player)
+{
+    xs_move bestMove = kXS_UNDEFINED_MOVE;
+    long bestScore = (player == kXS_MACINTOSH_PLAYER) ? TTTT_VERY_BIG_BOARDVALUE : -TTTT_VERY_BIG_BOARDVALUE;
+
+    for (xs_move i = 0; i < TTTT_BOARD_POSITIONS; i++) {
+        if (board[i] == kXS_NOBODY_PLAYER) {
+            board[i] = player;
+            long score = boardeval(board);
+            board[i] = kXS_NOBODY_PLAYER; // Undo the move
+
+            if (player == kXS_MACINTOSH_PLAYER) {
+                if (score < bestScore) {
+                    bestScore = score;
+                    bestMove = i;
+                }
+            } else { // kXS_HUMAN_PLAYER
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove = i;
+                }
+            }
+        }
+    }
+    return bestMove;
 }

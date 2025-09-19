@@ -400,12 +400,31 @@ void turn_mode(const char *who_moves, const char *string_rep) {
     }
     TTTT_SetBoard(string_rep);
 
-    TTTT_GameBoardStringRep pszGameBoard;
-    TTTT_GetBoard(pszGameBoard);
-    print_stringrep(pszGameBoard);
-
     // Do one move ahead based on who's turn it is
-    
+    long aMove = -1;
+    TTTT_GameBoardStringRep newStringRep;
+    if (*who_moves == 'm') {
+        TTTT_GetBestMove(kTTTT_MACHINE, &aMove);
+        TTTT_MakeStringRep(kTTTT_MACHINE, aMove, string_rep, newStringRep);
+
+        if (!quiteflag)
+            printf("\nMachine's best move is:  %ld\n", aMove + 1);
+        else
+            printf("%ld\n", aMove + 1);
+
+    } else if (*who_moves == 'h') {
+        TTTT_GetBestMove(kTTTT_HUMAN, &aMove);
+        TTTT_MakeStringRep(kTTTT_HUMAN, aMove, string_rep, newStringRep);
+
+        if (!quiteflag)
+            printf("\nHuman's best move is:  %ld\n", aMove + 1);
+        else
+            printf("%ld\n", aMove + 1);
+    }
+
+    // TTTT_GetBoard(pszGameBoard);
+    print_stringrep(newStringRep);
+
 }
 
 
