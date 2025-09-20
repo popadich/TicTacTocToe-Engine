@@ -217,9 +217,10 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 	
 	// Parse the moves and if there are errors report back
 	len = strlen( humanMoves );
+	printf("\nhuman moves len: %ld \nmoves: %s\n", len, humanMoves);
 	if (len<1024) {
-		buf = (char *)malloc(4096);
-		strncpy(buf, humanMoves, len);
+		buf = (char *)malloc(len+1);
+		strncpy(buf, humanMoves, len+1);
 		buf[len]='\0';
 		printf("\nhuman moves len: %ld \nmoves: %s\n", len, humanMoves);
 		
@@ -246,8 +247,8 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 	
 	len = strlen( machineMoves );
 	if (len<1024) {
-		buf = (char *)malloc(4096);
-		strncpy(buf, machineMoves, len);
+		buf = (char *)malloc(len+1);
+		strncpy(buf, machineMoves, len+1);
 		buf[len]='\0';
 		printf("\nmachine moves len: %ld \nmoves: %s\n", len, machineMoves);
 		

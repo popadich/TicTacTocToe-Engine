@@ -154,8 +154,7 @@ xs_stackptr size_movestack(struct stack_structure *s){
     return (s->stack_pointer) + 1;
 }
 
-//MARK: -
-//MARK: LOCAL FUNCTIONS
+//MARK: - LOCAL FUNCTIONS
 
 void setwinpath(xs_stackptr pathwinner)
 {
@@ -216,8 +215,7 @@ void clearwinpath(void)
     }
 }
 
-//MARK: -
-//MARK: PUBLIC
+//MARK: - PUBLIC
 
 void initboard(void) {
     xs_move the_move;
@@ -363,8 +361,8 @@ xs_move machinemoverandomized(void) {
                 }
             }
         }
-        xs_played_move goodmove;
-        xs_played_move evenmove;
+        xs_played_move goodmove = {0,0};
+        xs_played_move evenmove = {0,0};
         if (pop_from_movestack(st, &goodmove)) {
             push_into_movestack(bm, goodmove);
         }
@@ -374,10 +372,11 @@ xs_move machinemoverandomized(void) {
             }
         }
 
-        // this stack should always conatin at least one move
+        xs_stackptr pickedmove = -1;
+        // this stack should always contain at least one move
         // if the stack is empty it means big trouble
         // printf("size: %d\n", size_movestack(bm));
-        xs_stackptr pickedmove = (arc4random() % size_movestack(bm)) + 1;
+        // xs_stackptr pickedmove = (arc4random() % size_movestack(bm)) + 1;
         // printf("random pick: %d\n",pickedmove);
 
         while (pop_from_movestack(bm, &goodmove) && pickedmove > 0) {
@@ -405,8 +404,7 @@ xs_move machinemove(void) {
     return themove;
 }
 
-//MARK: -
-//MARK: BOARD SCORING
+//MARK: - BOARD SCORING
 
 // Move is 1 based
 void count_human(xs_move aMove)
