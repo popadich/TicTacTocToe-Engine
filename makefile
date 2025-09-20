@@ -32,4 +32,11 @@ clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
 
 # Phony targets
-.PHONY: all clean
+.PHONY: all clean install
+
+# Install rule
+install: all
+	install -d -m 755 $(DESTDIR)/usr/local/bin
+	install -m 755 $(EXECUTABLE) $(DESTDIR)/usr/local/bin
+	install -d -m 755 $(DESTDIR)/usr/local/share/man/man1
+	install -m 644 tttt.1 $(DESTDIR)/usr/local/share/man/man1

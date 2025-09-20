@@ -1,79 +1,88 @@
-.\"Modified from man(1) of FreeBSD, the NetBSD mdoc.template, and mdoc.samples.
-.\"See Also:
-.\"man mdoc.samples for a complete listing of options
-.\"man mdoc for the short list of editing options
-.\"/usr/share/misc/mdoc.template
-.Dd 4/5/10               \" DATE 
-.Dt TTTTengine 1      \" Program name and manual section number 
+.Dd 4/5/10
+.Dt tttt 1
 .Os Darwin
-.Sh NAME                 \" Section Header - required - don't modify 
-.Nm TTTTengine,
-.\" The following lines are read in generating the apropos(man -k) database. Use only key
-.\" words here as the database is built based on the words here and in the .ND line. 
-.Nm Other_name_for_same_program(),
-.Nm Yet another name for the same program.
-.\" Use .Nm macro to designate other names for the documented program.
-.Nd This line parsed for whatis database.
-.Sh SYNOPSIS             \" Section Header - required - don't modify
+.Sh NAME
+.Nm tttt
+.Nd A 4x4x4 Tic-Tac-Toe game engine.
+.Sh SYNOPSIS
 .Nm
-.Op Fl abcd              \" [-abcd]
-.Op Fl a Ar path         \" [-a path] 
-.Op Ar file              \" [file]
-.Op Ar                   \" [file ...]
-.Ar arg0                 \" Underlined argument - use .Ar anywhere to underline
-arg2 ...                 \" Arguments
-.Sh DESCRIPTION          \" Section Header - required - don't modify
-Use the .Nm macro to refer to your program throughout the man page like such:
+.Op Fl e, -evaluate Ar stringrep
+.Op Fl g, -generate
+.Op Fl p, -play Ar h|m
+.Op Fl t, -turn Ar h|m Ar stringrep
+.Op Fl w, -weights Ar matrix
+.Op Fl m, -machine-moves Ar list
+.Op Fl h, -human-moves Ar list
+.Op Fl v, -verbose
+.Op Fl q, -quiet
+.Op Fl -help
+.Op Fl -version
+.Sh DESCRIPTION
+The
 .Nm
-Underlining is accomplished with the .Ar macro like this:
-.Ar underlined text .
-.Pp                      \" Inserts a space
-A list of items with descriptions:
-.Bl -tag -width -indent  \" Begins a tagged list 
-.It item a               \" Each item preceded by .It macro
-Description of item a
-.It item b
-Description of item b
-.El                      \" Ends the list
+utility is a 3-dimensional (4x4x4) Tic-Tac-Toe game engine. It can be used to play against the computer, evaluate board states, generate board representations from a series of moves, and suggest the best next move for a given board state.
 .Pp
-A list of flags and their descriptions:
-.Bl -tag -width -indent  \" Differs from above in tag removed 
-.It Fl a                 \"-a flag as a list item
-Description of -a flag
-.It Fl b
-Description of -b flag
-.El                      \" Ends the list
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl e, -evaluate Ar stringrep
+Evaluates the provided board string representation and prints its heuristic value. The string representation is a 64-character string where 'X' represents the human player, 'O' represents the machine, and '.' represents an empty space.
+.It Fl g, -generate
+Generates a board string representation from a list of human and machine moves. Requires both
+.Fl h
+and
+.Fl m
+flags.
+.It Fl p, -play Ar h|m
+Starts an interactive game. Specify 'h' for the human to move first, or 'm' for the machine to move first.
+.It Fl t, -turn Ar h|m Ar stringrep
+Given a board state via
+.Ar stringrep ,
+determines and prints the best next move for the specified player ('h' for human, 'm' for machine). It also prints the resulting board string representation.
+.It Fl w, -weights Ar matrix
+Sets the heuristic weights for the engine's evaluation function. The
+.Ar matrix
+is a string of 25 space-separated integers.
+.It Fl m, -machine-moves Ar list
+Provides a list of machine moves (1-64) for board generation. Used with the
+.Fl g
+flag. The list should be a space-separated string (e.g., "64 63").
+.It Fl h, -human-moves Ar list
+Provides a list of human moves (1-64) for board generation. Used with the
+.Fl g
+flag. The list should be a space-separated string (e.g., "4 5").
+.It Fl v, -verbose
+Enables verbose output, showing debugging information.
+.It Fl q, -quiet
+Suppresses all non-essential output. In play mode, the machine's move is printed. In turn mode, the best move is printed.
+.It Fl -help
+Displays a summary of the command-line options and exits.
+.It Fl -version
+Outputs the version information and exits.
+.El
+.Sh EXAMPLES
+Play an interactive game with the human moving first:
+.Bd -literal -offset indent
+./tttt -p h
+.Ed
 .Pp
-.\" .Sh ENVIRONMENT      \" May not be needed
-.\" .Bl -tag -width "ENV_VAR_1" -indent \" ENV_VAR_1 is width of the string ENV_VAR_1
-.\" .It Ev ENV_VAR_1
-.\" Description of ENV_VAR_1
-.\" .It Ev ENV_VAR_2
-.\" Description of ENV_VAR_2
-.\" .El                      
-.Sh FILES                \" File used or created by the topic of the man page
-.Bl -tag -width "/Users/joeuser/Library/really_long_file_name" -compact
-.It Pa /usr/share/file_name
-FILE_1 description
-.It Pa /Users/joeuser/Library/really_long_file_name
-FILE_2 description
-.El                      \" Ends the list
-.\" .Sh DIAGNOSTICS       \" May not be needed
-.\" .Bl -diag
-.\" .It Diagnostic Tag
-.\" Diagnostic informtion here.
-.\" .It Diagnostic Tag
-.\" Diagnostic informtion here.
-.\" .El
-.Sh SEE ALSO 
-.\" List links in ascending order by section, alphabetically within a section.
-.\" Please do not reference files that do not exist without filing a bug report
-.Xr a 1 , 
-.Xr b 1 ,
-.Xr c 1 ,
-.Xr a 2 ,
-.Xr b 2 ,
-.Xr a 3 ,
-.Xr b 3 
-.\" .Sh BUGS              \" Document known, unremedied bugs 
-.\" .Sh HISTORY           \" Document history if command behaves in a unique manner
+Play an interactive game with custom heuristic weights:
+.Bd -literal -offset indent
+./tttt -p h -w "0 -2 -5 -11 -27 2 0 3 12 0 5 -3 1 0 0 11 -12 0 0 0 23 0 0 0 0"
+.Ed
+.Pp
+Generate a board string representation from a sequence of moves:
+.Bd -literal -offset indent
+./tttt -g -h "4 5" -m "64 63"
+.Ed
+.Pp
+Evaluate a given board state:
+.Bd -literal -offset indent
+./tttt -e "......X......................................................OOX"
+.Ed
+.Pp
+Get the machine's next best move for a given board state:
+.Bd -literal -offset indent
+./tttt -t m "......XX.....................................................OOX"
+.Ed
+.Sh SEE ALSO
+.Xr make 1
