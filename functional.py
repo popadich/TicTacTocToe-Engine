@@ -41,6 +41,13 @@ m_arr is: 63
 Machine's best move is:  1
 O.....XX.....................................................OOX
 """
+    },
+    {
+        'args': ['--t', 'm', "......XX.....................................................OOX", '-q' ],
+        'expected_output': """
+1
+O.....XX.....................................................OOX
+"""
     }
 ]
 
@@ -59,15 +66,30 @@ def run_test(args):
         return e.stdout + e.stderr
 
 def main():
+    passed_count = 0
+    failed_count = 0
     for idx, test in enumerate(test_cases):
         output = run_test(test['args'])
+        print( '\n\n' + '-' * 40 )
         print(f"Test {idx + 1}: {' '.join(test['args'])}")
         print("Captured Output:")
         print(output)
         print("Expected Output:")
         print(test['expected_output'])
-        print("Test Passed:", output.strip() == test['expected_output'].strip())
-        print('-' * 40)
+        passed = output.strip() == test['expected_output'].strip()
+        if passed:
+            # Print 'Test Passed: True' in green
+            print(f"\033[92mTest {idx + 1}: {passed}\033[0m")
+        else:
+            # Print 'Test Passed: False' in red
+            print(f"\033[91mTest {idx + 1}: {passed}\033[0m")
+        if passed:
+            passed_count += 1
+        else:
+            failed_count += 1
+    print('\n' + '=' * 40)
+    print(f"Total Passed: {passed_count}  ::  Total Failed: {failed_count}\n")
+
 
 if __name__ == '__main__':
     main()

@@ -34,6 +34,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#define MAX_INPUT_STRING 1024
+#define MAX_ALLOWED_MOVES 32
+
 // Implements TTTT_MakeStringRep
 // whoMoves: which player (kTTTT_HUMAN or kTTTT_MACHINE)
 // aMove: move index (0-based)
@@ -207,8 +210,8 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 	char *ptr, *buf;
 	long tokens_count;
 
-	long h_arr[32];
-	long m_arr[32];
+	long h_arr[MAX_ALLOWED_MOVES];
+	long m_arr[MAX_ALLOWED_MOVES];
 
     long len = 0;
 	
@@ -217,8 +220,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 	
 	// Parse the moves and if there are errors report back
 	len = strlen( humanMoves );
-	printf("\nhuman moves len: %ld \nmoves: %s\n", len, humanMoves);
-	if (len<1024) {
+	if (len<MAX_INPUT_STRING) {
 		buf = (char *)malloc(len+1);
 		strncpy(buf, humanMoves, len+1);
 		buf[len]='\0';
@@ -246,7 +248,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 	}
 	
 	len = strlen( machineMoves );
-	if (len<1024) {
+	if (len<MAX_INPUT_STRING) {
 		buf = (char *)malloc(len+1);
 		strncpy(buf, machineMoves, len+1);
 		buf[len]='\0';
