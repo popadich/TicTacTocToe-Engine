@@ -8,15 +8,15 @@ A simple 3 dimensional tic-tac-toe like game which is played on a 4x4x4 grid and
 
 **Key Technologies:**
 
-*   Language: C
-*   Build System: Make
+* Language: C
+* Build System: Make
 
 **Architecture:**
 
-*   `TTTT.c`, `TTTT.h`: Core game engine logic.
-*   `TTTTapi.c`, `TTTTapi.h`: API for interacting with the game engine.
-*   `main.c`: Command-line interface for playing the game and utilizing the engine.
-*   `makefile`: Defines the build process.
+* `TTTT.c`, `TTTT.h`: Core game engine logic.
+* `TTTTapi.c`, `TTTTapi.h`: API for interacting with the game engine.
+* `main.c`: Command-line interface for playing the game and utilizing the engine.
+* `makefile`: Defines the build process.
 
 # Building and Running
 
@@ -28,7 +28,7 @@ This code is meant to compile both on a Mac as an XCode project and on a Linux/U
 
 Assuming you have the proper devlopement tools installed, you should be able to cd to the project directory and type make.
 ```
-% cd TTTTengine
+% cd TicTacTocToe-Engine
 % make
 ```
 
@@ -58,19 +58,20 @@ Or play with different heurisitic weights:
 
 ### Other Modes
 
-*   **Generate Board String Representation:**
+* **Generate Board String Representation:**
 
     ```bash
     ./tttt -g -h "4 5" -m "64 63"
     ```
 
-*   **Evaluate Board State:**
+* **Evaluate Board State:**
 
     ```bash
     ./tttt -e "......X......................................................OOX"
     ```
 
-*   **Tournament Mode, Next Move Generator:**
+* **Tournament Mode, Next Move Generator:**
+
     ```bash
     ./tttt  -t m  "......XX.....................................................OOX"
     ```

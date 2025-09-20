@@ -286,7 +286,7 @@ TTTT_Return	TTTT_EvaluateBoardValue(const TTTT_GameBoardStringRep pszGameBoard, 
 			aBoard[i] = kXS_HUMAN_PLAYER;
 		}
 		else if (pszGameBoard[i] == 'O') {
-			aBoard[i] = kXS_MACINTOSH_PLAYER;
+			aBoard[i] = kXS_MACHINE_PLAYER;
 		}
 		else {
 			aBoard[i] = kXS_NOBODY_PLAYER;
@@ -310,7 +310,7 @@ TTTT_Return TTTT_SetBoard(const TTTT_GameBoardStringRep pszGameBoard)
             aBoard[i] = kXS_HUMAN_PLAYER;
         }
         else if (pszGameBoard[i] == 'O') {
-            aBoard[i] = kXS_MACINTOSH_PLAYER;
+            aBoard[i] = kXS_MACHINE_PLAYER;
         }
         else {
             aBoard[i] = kXS_NOBODY_PLAYER;

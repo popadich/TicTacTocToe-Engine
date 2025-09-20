@@ -184,7 +184,7 @@ xs_player checkforwinners(void)
     {
         if (the_path_counts_mac[j] == TTTT_WIN_SIZE)
         {
-            aWinner = kXS_MACINTOSH_PLAYER;
+            aWinner = kXS_MACHINE_PLAYER;
             setwinpath(j);
         }
         if (the_path_counts_human[j] == TTTT_WIN_SIZE)
@@ -258,7 +258,7 @@ xs_gameboard* getboard(char *pszBoard)
     {
         if(the_board[the_move] == kXS_HUMAN_PLAYER)
             pszBoard[the_move] = 'X';
-        else if(the_board[the_move] == kXS_MACINTOSH_PLAYER)
+        else if(the_board[the_move] == kXS_MACHINE_PLAYER)
             pszBoard[the_move] = 'O';
         else if(the_board[the_move] == kXS_NOBODY_PLAYER)
             pszBoard[the_move] = '_';
@@ -317,7 +317,7 @@ xs_move machinemoverote(void) {
         minscore = TTTT_VERY_BIG_BOARDVALUE;
         for (trymove = 0; trymove < TTTT_BOARD_POSITIONS; trymove++) {
             if (the_board[trymove] == kXS_NOBODY_PLAYER) {
-                boardvalue = futureboardscore(trymove, kXS_MACINTOSH_PLAYER);
+                boardvalue = futureboardscore(trymove, kXS_MACHINE_PLAYER);
                 if (boardvalue < minscore) {
                     minscore = boardvalue;
                     bestmove = trymove;
@@ -325,7 +325,7 @@ xs_move machinemoverote(void) {
             }
         }
 
-        the_board[bestmove] = kXS_MACINTOSH_PLAYER;
+        the_board[bestmove] = kXS_MACHINE_PLAYER;
         the_winner_is = checkforwinners();
     }
     return bestmove;
@@ -353,7 +353,7 @@ xs_move machinemoverandomized(void) {
         minscore = TTTT_VERY_BIG_BOARDVALUE;
         for (trymove = 0; trymove < TTTT_BOARD_POSITIONS; trymove++) {
             if (the_board[trymove] == kXS_NOBODY_PLAYER) {
-                boardvalue = futureboardscore(trymove, kXS_MACINTOSH_PLAYER);
+                boardvalue = futureboardscore(trymove, kXS_MACHINE_PLAYER);
                 if (boardvalue <= minscore) {
                     minscore = boardvalue;
                     bestmove = trymove;
@@ -389,7 +389,7 @@ xs_move machinemoverandomized(void) {
 
         clear_movestack(bm);
         clear_movestack(st);
-        the_board[bestmove] = kXS_MACINTOSH_PLAYER;
+        the_board[bestmove] = kXS_MACHINE_PLAYER;
         the_winner_is = checkforwinners();
     }
     return bestmove;
@@ -448,7 +448,7 @@ long boardeval(xs_gameboard aBoard) {
     clearpathcounts();
 
     for (pieceposition = 0; pieceposition < TTTT_BOARD_POSITIONS; pieceposition++) {
-        if (aBoard[pieceposition] == kXS_MACINTOSH_PLAYER) {
+        if (aBoard[pieceposition] == kXS_MACHINE_PLAYER) {
             count_machine(pieceposition);
         }
         else if (aBoard[pieceposition] == kXS_HUMAN_PLAYER) {
@@ -479,7 +479,7 @@ long futureboardscore(xs_move aMove, xs_player currentPlayer)
     TTTT_clone_board(dup_board_game, the_board);
 
     // add our move to the board
-    dup_board_game[aMove] = kXS_MACINTOSH_PLAYER;
+    dup_board_game[aMove] = kXS_MACHINE_PLAYER;
 
     sum = boardeval(dup_board_game);
 
@@ -497,10 +497,10 @@ void setboard(xs_gameboard new_board) {
     TTTT_clone_board(the_board, new_board);
 }
 
-int choosemove(xs_gameboard board, int player)
+xs_move choosemove(xs_gameboard board, int player)
 {
     xs_move bestMove = kXS_UNDEFINED_MOVE;
-    long bestScore = (player == kXS_MACINTOSH_PLAYER) ? TTTT_VERY_BIG_BOARDVALUE : -TTTT_VERY_BIG_BOARDVALUE;
+    long bestScore = (player == kXS_MACHINE_PLAYER) ? TTTT_VERY_BIG_BOARDVALUE : -TTTT_VERY_BIG_BOARDVALUE;
 
     for (xs_move i = 0; i < TTTT_BOARD_POSITIONS; i++) {
         if (board[i] == kXS_NOBODY_PLAYER) {
@@ -508,7 +508,7 @@ int choosemove(xs_gameboard board, int player)
             long score = boardeval(board);
             board[i] = kXS_NOBODY_PLAYER; // Undo the move
 
-            if (player == kXS_MACINTOSH_PLAYER) {
+            if (player == kXS_MACHINE_PLAYER) {
                 if (score < bestScore) {
                     bestScore = score;
                     bestMove = i;
