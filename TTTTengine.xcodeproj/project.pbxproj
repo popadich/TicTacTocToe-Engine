@@ -3,12 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		8DD76FAC0486AB0100D96B5E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.c */; settings = {ATTRIBUTES = (); }; };
-		8DD76FB00486AB0100D96B5E /* TTTTengine.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* TTTTengine.1 */; };
+		8DD76FB00486AB0100D96B5E /* tttt.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* tttt.1 */; };
 		FA3D420A2AA102F8002391ED /* TTTTapi.c in Sources */ = {isa = PBXBuildFile; fileRef = FA3D42082AA102F8002391ED /* TTTTapi.c */; };
 		FA3D420B2AA102F8002391ED /* TTTT.c in Sources */ = {isa = PBXBuildFile; fileRef = FA3D42092AA102F8002391ED /* TTTT.c */; };
 		FA95AF12116A73DD00E2A051 /* TTTTapi.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA95AF10116A73DD00E2A051 /* TTTTapi.h */; };
@@ -22,7 +22,7 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				8DD76FB00486AB0100D96B5E /* TTTTengine.1 in CopyFiles */,
+				8DD76FB00486AB0100D96B5E /* tttt.1 in CopyFiles */,
 				FA95AF12116A73DD00E2A051 /* TTTTapi.h in CopyFiles */,
 				FA95AF28116A761200E2A051 /* TTTT.h in CopyFiles */,
 			);
@@ -31,14 +31,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		08FB7796FE84155DC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		08FB7796FE84155DC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = TTTTengine/main.c; sourceTree = "<group>"; };
 		8DD76FB20486AB0100D96B5E /* TTTTengine */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TTTTengine; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6A0FF2C0290799A04C91782 /* TTTTengine.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = TTTTengine.1; sourceTree = "<group>"; };
-		FA3D42082AA102F8002391ED /* TTTTapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TTTTapi.c; sourceTree = "<group>"; };
-		FA3D42092AA102F8002391ED /* TTTT.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TTTT.c; sourceTree = "<group>"; };
-		FA95AF10116A73DD00E2A051 /* TTTTapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTTapi.h; sourceTree = "<group>"; };
-		FA95AF26116A761200E2A051 /* TTTT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTT.h; sourceTree = "<group>"; };
-		FAA0F60313913F47008DB983 /* TTTTcommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTTcommon.h; sourceTree = "<group>"; };
+		C6A0FF2C0290799A04C91782 /* tttt.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = tttt.1; sourceTree = "<group>"; };
+		FA3D42082AA102F8002391ED /* TTTTapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TTTTapi.c; path = TTTTengine/TTTTapi.c; sourceTree = "<group>"; };
+		FA3D42092AA102F8002391ED /* TTTT.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TTTT.c; path = TTTTengine/TTTT.c; sourceTree = "<group>"; };
+		FA95AF10116A73DD00E2A051 /* TTTTapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTTTapi.h; path = TTTTengine/TTTTapi.h; sourceTree = "<group>"; };
+		FA95AF26116A761200E2A051 /* TTTT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTTT.h; path = TTTTengine/TTTT.h; sourceTree = "<group>"; };
+		FAA0F60313913F47008DB983 /* TTTTcommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTTTcommon.h; path = TTTTengine/TTTTcommon.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,7 +86,7 @@
 		C6A0FF2B0290797F04C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
-				C6A0FF2C0290799A04C91782 /* TTTTengine.1 */,
+				C6A0FF2C0290799A04C91782 /* tttt.1 */,
 			);
 			name = Documentation;
 			sourceTree = "<group>";
