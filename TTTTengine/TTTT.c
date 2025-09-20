@@ -130,7 +130,7 @@ xs_winstable        the_wins_path_ids_table =
 {33,37,38,55,58,61,64}
 };
 
-#pragma mark  MOVE STACK
+//MARK:  MOVE STACK
 
 void push_into_movestack(struct stack_structure *s, xs_played_move playedMove){
     s->stack_pointer++;
@@ -154,8 +154,8 @@ xs_stackptr size_movestack(struct stack_structure *s){
     return (s->stack_pointer) + 1;
 }
 
-#pragma mark  -
-#pragma mark LOCAL FUNCTIONS
+//MARK: -
+//MARK: LOCAL FUNCTIONS
 
 void setwinpath(xs_stackptr pathwinner)
 {
@@ -216,8 +216,8 @@ void clearwinpath(void)
     }
 }
 
-#pragma mark -
-#pragma mark PUBLIC
+//MARK: -
+//MARK: PUBLIC
 
 void initboard(void) {
     xs_move the_move;
@@ -405,8 +405,8 @@ xs_move machinemove(void) {
     return themove;
 }
 
-#pragma mark -
-#pragma mark BOARD SCORING
+//MARK: -
+//MARK: BOARD SCORING
 
 // Move is 1 based
 void count_human(xs_move aMove)
