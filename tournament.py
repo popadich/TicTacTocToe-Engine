@@ -17,8 +17,21 @@ def run_tttt_tournament(player, board):
     return result.stdout
 
 def main():
-    output = run_tttt_tournament('h', 'O.....XX.....................................................OOX')
-    print(output)
+    new_board = '................................................................'
+    for turn in range(1, 5):
+        human_move = run_tttt_tournament('h', new_board)  
+        # parse output which should look like <int> <string>
+        move_str, new_board = human_move.strip().split(maxsplit=1)
+        move = int(move_str)
+        print(turn * 2 - 1, 'H:', move, new_board)
+        print('')
+
+        machine_move = run_tttt_tournament('m', new_board)
+        # parse output which should look like <int> <string>
+        move_str, new_board = machine_move.strip().split(maxsplit=1)
+        move = int(move_str)
+        print(turn * 2, 'M:', move, new_board)
+        print('')
 
 if __name__ == '__main__':
     main()
