@@ -533,6 +533,43 @@ tttt_args parse_arguments(int argc, char *argv[]) {
 }
 
 
+int count_moves_from_string(const char *moves_string) {
+    if (moves_string == NULL) {
+        return 0;
+    }
+    int count = 0;
+    const char *p = moves_string;
+    while (*p) {
+        if (isspace(*p)) {
+            count++;
+        }
+        p++;
+    }
+    return count + 1;
+}
+
+int count_moves_from_board(const char *board_string, char player_char) {
+    if (board_string == NULL) {
+        return 0;
+    }
+    int count = 0;
+    const char *p = board_string;
+    while (*p) {
+        if (*p == player_char) {
+            count++;
+        }
+        p++;
+    }
+    return count;
+}
+
+void sanity_check_moves(int human_moves, int machine_moves) {
+    if (abs(human_moves - machine_moves) > 1) {
+        fprintf(stderr, "Invalid number of moves. Human moves: %d, Machine moves: %d. The difference cannot be greater than 1.\n", human_moves, machine_moves);
+        exit(EXIT_FAILURE);
+    }
+}
+
 // PLAY INTERACTIVE GAME
 //     tttt -p
 //
@@ -578,6 +615,9 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Board string representation must be specified with '-e' option.\n");
             exit(EXIT_FAILURE);
         }
+        int human_moves_eval = count_moves_from_board(args.string_rep, 'O');
+        int machine_moves_eval = count_moves_from_board(args.string_rep, 'X');
+        sanity_check_moves(human_moves_eval, machine_moves_eval);
         long myBoardValue = evaluate_stringrep(args.string_rep);
         printf("Board Value is: %ld\n\n", myBoardValue);
         break;
@@ -591,6 +631,9 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Machine moves must be specified with '-m' option.\n");
             exit(EXIT_FAILURE);
         }
+        int human_moves_gen = count_moves_from_string(args.human_moves);
+        int machine_moves_gen = count_moves_from_string(args.machine_moves);
+        sanity_check_moves(human_moves_gen, machine_moves_gen);
         generate_stringrep(args.human_moves, args.machine_moves);
         break;
 
