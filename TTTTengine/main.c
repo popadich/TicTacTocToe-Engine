@@ -615,8 +615,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Board string representation must be specified with '-e' option.\n");
             exit(EXIT_FAILURE);
         }
-        int human_moves_eval = count_moves_from_board(args.string_rep, 'O');
-        int machine_moves_eval = count_moves_from_board(args.string_rep, 'X');
+        int human_moves_eval = count_moves_from_board(args.string_rep, 'X');
+        int machine_moves_eval = count_moves_from_board(args.string_rep, 'O');
         sanity_check_moves(human_moves_eval, machine_moves_eval);
         long myBoardValue = evaluate_stringrep(args.string_rep);
         printf("Board Value is: %ld\n\n", myBoardValue);
@@ -642,6 +642,9 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Turn mode requires who moves and board string representation.\n");
             exit(EXIT_FAILURE);
         }
+        int human_moves_turn = count_moves_from_board(args.string_rep, 'X');
+        int machine_moves_turn = count_moves_from_board(args.string_rep, 'O');
+        sanity_check_moves(human_moves_turn, machine_moves_turn);
         turn_mode(args.who_moves, args.string_rep);
         break;
 

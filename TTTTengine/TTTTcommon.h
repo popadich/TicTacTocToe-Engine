@@ -40,7 +40,8 @@
 #define TTTT_WINNING_PATHS_COUNT	    76
 #define TTTT_VERY_BIG_BOARDVALUE		999999
 
-
+#define TTTT_HUMAN_MARKER               'X'
+#define TTTT_MACHINE_MARKER             'O'
 
 #endif  // TTTTCOMMON_H
 
