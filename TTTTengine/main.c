@@ -67,10 +67,7 @@ TTTT_WeightsTable new_weights;
 void print_stringrep(char *theBoard) {
     int i = 0;
     for (i = 0; i < 64; i++) {
-        if (theBoard[i] == '_')
-            printf(".");
-        else
-            printf("%c", theBoard[i]);
+        printf("%c", theBoard[i]);
     }
     printf("\n");
 }

@@ -57,9 +57,10 @@ TTTT_Return TTTT_MakeStringRep(const int whoMoves, const long aMove, const TTTT_
 	// Defensive: ensure we copy at least kTTTT_Positions chars, but not more than buffer
 	size_t copylen = (len > kTTTT_Positions) ? kTTTT_Positions : len;
 	memcpy(pszNewRep, pszOldRep, copylen);
-	// If pszOldRep is shorter, fill the rest with '_'
+	// If pszOldRep is shorter, fill the rest with periods
+	// Defensive: ensure we do not write past the end of pszNewRep buffer
 	for (size_t i = copylen; i < kTTTT_Positions; ++i) {
-		pszNewRep[i] = '.';
+		pszNewRep[i] = TTTT_NOBODY_MARKER;
 	}
 	pszNewRep[kTTTT_Positions] = '\0';
 
