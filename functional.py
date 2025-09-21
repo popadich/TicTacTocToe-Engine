@@ -22,18 +22,7 @@ Board Value is: 8
     },
     {
         'args': ['--generate', '-h', "4 5", '-m', "64 63" ],
-        'expected_output': """
-human moves len: 3 
-moves: 4 5
-h_arr is: 4 
-h_arr is: 5 
-
-machine moves len: 5 
-moves: 64 63
-m_arr is: 64 
-m_arr is: 63 
-...XX.........................................................OO
-""",
+        'expected_output': "...XX.........................................................OO",
     },
     {
         'args': ['--t', 'm', "......XX.....................................................OOX" ],
