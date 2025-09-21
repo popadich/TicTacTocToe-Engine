@@ -38,7 +38,7 @@ Board Value is: 8
     },
     {
         'args': ['-t', 'm', "./tttt -t m O..O........O...XXXX.......................................XXXXX"],
-        'expected_output': 'Invalid number of moves. Human moves: 3, Machine moves: 9. The difference cannot be greater than 1.'
+        'expected_output': 'Invalid number of moves. Human moves: 9, Machine moves: 3. The difference cannot be greater than 1.'
     }
 ]
 

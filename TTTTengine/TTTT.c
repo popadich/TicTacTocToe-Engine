@@ -519,5 +519,7 @@ xs_move choosemove(xs_gameboard board, int player)
             }
         }
     }
+    the_board[bestMove] = player;
+    the_winner_is = checkforwinners();
     return bestMove;
 }

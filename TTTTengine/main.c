@@ -403,25 +403,47 @@ void turn_mode(const char *who_moves, const char *string_rep) {
     // Do one move ahead based on who's turn it is
     long aMove = -1;
     TTTT_GameBoardStringRep newStringRep;
+    int player = 0;
     if (*who_moves == 'm') {
+        player = kTTTT_MACHINE;
         TTTT_GetBestMove(kTTTT_MACHINE, &aMove);
         TTTT_MakeStringRep(kTTTT_MACHINE, aMove, string_rep, newStringRep);
-
         if (!quiteflag)
             printf("Machine move: %ld  ", aMove + 1);
         else
             printf("%ld ", aMove + 1);
-
     } else if (*who_moves == 'h') {
+        player = kTTTT_HUMAN;
         TTTT_GetBestMove(kTTTT_HUMAN, &aMove);
         TTTT_MakeStringRep(kTTTT_HUMAN, aMove, string_rep, newStringRep);
-
         if (!quiteflag)
             printf("Human move:  %ld  ", aMove + 1);
         else
             printf("%ld ", aMove + 1);
     }
-    // TTTT_GetBoard(pszGameBoard);
+
+
+    // Set the board to the new state after the move
+    TTTT_SetBoard(newStringRep);
+
+    // printf("New String Rep: %s\n",newStringRep);
+
+    // Check for winner after the move
+    long winner = kTTTT_NOBODY;
+    TTTT_GetWinner(&winner);
+
+    if (winner == kTTTT_MACHINE) {
+        if (!quiteflag)
+            printf("\nGame Over:  Machine Wins\n");
+        else
+            printf("game_over\n");
+    } else if (winner == kTTTT_HUMAN) {
+        if (!quiteflag)
+            printf("\nGame Over:  Human Wins\n");
+        else
+            printf("game_over\n");
+    }
+
     print_stringrep(newStringRep);
 
 }
