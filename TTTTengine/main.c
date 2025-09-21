@@ -403,9 +403,8 @@ void turn_mode(const char *who_moves, const char *string_rep) {
     // Do one move ahead based on who's turn it is
     long aMove = -1;
     TTTT_GameBoardStringRep newStringRep;
-    int player = 0;
+    
     if (*who_moves == 'm') {
-        player = kTTTT_MACHINE;
         TTTT_GetBestMove(kTTTT_MACHINE, &aMove);
         TTTT_MakeStringRep(kTTTT_MACHINE, aMove, string_rep, newStringRep);
         if (!quiteflag)
@@ -413,7 +412,6 @@ void turn_mode(const char *who_moves, const char *string_rep) {
         else
             printf("%ld ", aMove + 1);
     } else if (*who_moves == 'h') {
-        player = kTTTT_HUMAN;
         TTTT_GetBestMove(kTTTT_HUMAN, &aMove);
         TTTT_MakeStringRep(kTTTT_HUMAN, aMove, string_rep, newStringRep);
         if (!quiteflag)
@@ -422,11 +420,8 @@ void turn_mode(const char *who_moves, const char *string_rep) {
             printf("%ld ", aMove + 1);
     }
 
-
     // Set the board to the new state after the move
     TTTT_SetBoard(newStringRep);
-
-    // printf("New String Rep: %s\n",newStringRep);
 
     // Check for winner after the move
     long winner = kTTTT_NOBODY;
@@ -637,8 +632,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Board string representation must be specified with '-e' option.\n");
             exit(EXIT_FAILURE);
         }
-        int human_moves_eval = count_moves_from_board(args.string_rep, 'X');
-        int machine_moves_eval = count_moves_from_board(args.string_rep, 'O');
+        int human_moves_eval = count_moves_from_board(args.string_rep, TTTT_HUMAN_MARKER);
+        int machine_moves_eval = count_moves_from_board(args.string_rep, TTTT_MACHINE_MARKER);
         sanity_check_moves(human_moves_eval, machine_moves_eval);
         long myBoardValue = evaluate_stringrep(args.string_rep);
         printf("Board Value is: %ld\n\n", myBoardValue);
@@ -664,8 +659,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Turn mode requires who moves and board string representation.\n");
             exit(EXIT_FAILURE);
         }
-        int human_moves_turn = count_moves_from_board(args.string_rep, 'X');
-        int machine_moves_turn = count_moves_from_board(args.string_rep, 'O');
+        int human_moves_turn = count_moves_from_board(args.string_rep, TTTT_HUMAN_MARKER);
+        int machine_moves_turn = count_moves_from_board(args.string_rep, TTTT_MACHINE_MARKER);
         sanity_check_moves(human_moves_turn, machine_moves_turn);
         turn_mode(args.who_moves, args.string_rep);
         break;

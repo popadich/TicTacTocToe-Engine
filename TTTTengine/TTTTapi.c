@@ -66,9 +66,9 @@ TTTT_Return TTTT_MakeStringRep(const int whoMoves, const long aMove, const TTTT_
 	// Set the move for the player
 	char mark = '.';
 	if (whoMoves == kTTTT_HUMAN) {
-		mark = 'X';
+		mark = TTTT_HUMAN_MARKER;
 	} else if (whoMoves == kTTTT_MACHINE) {
-		mark = 'O';
+		mark = TTTT_MACHINE_MARKER;
 	} else {
 		return kTTTT_InvalidArgument;
 	}
@@ -239,7 +239,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 		
 		for (j=0; j<tokens_count; j++) {
 			// printf("h_arr is: %ld \n", h_arr[j]);
-			pszGameBoard[h_arr[j]-1] = 'X';
+			pszGameBoard[h_arr[j]-1] = TTTT_HUMAN_MARKER;
 		}
 		if (buf) {
 			free(buf);
@@ -266,7 +266,7 @@ TTTT_Return	TTTT_StringRep(const char *humanMoves, const char *machineMoves, TTT
 		
 		for (j=0; j<tokens_count; j++) {
 			// printf("m_arr is: %ld \n", m_arr[j]);
-			pszGameBoard[m_arr[j]-1] = 'O';
+			pszGameBoard[m_arr[j]-1] = TTTT_MACHINE_MARKER;
 		}
 		
 		if (buf) {
@@ -285,10 +285,10 @@ TTTT_Return	TTTT_EvaluateBoardValue(const TTTT_GameBoardStringRep pszGameBoard, 
 	long score;
 	
 	for (i=0; i<TTTT_BOARD_POSITIONS; i++) {
-		if (pszGameBoard[i] == 'X') {
+		if (pszGameBoard[i] == TTTT_HUMAN_MARKER) {
 			aBoard[i] = kXS_HUMAN_PLAYER;
 		}
-		else if (pszGameBoard[i] == 'O') {
+		else if (pszGameBoard[i] == TTTT_MACHINE_MARKER) {
 			aBoard[i] = kXS_MACHINE_PLAYER;
 		}
 		else {
@@ -309,10 +309,10 @@ TTTT_Return TTTT_SetBoard(const TTTT_GameBoardStringRep pszGameBoard)
     long i;
 
     for (i=0; i<TTTT_BOARD_POSITIONS; i++) {
-        if (pszGameBoard[i] == 'X') {
+        if (pszGameBoard[i] == TTTT_HUMAN_MARKER) {
             aBoard[i] = kXS_HUMAN_PLAYER;
         }
-        else if (pszGameBoard[i] == 'O') {
+        else if (pszGameBoard[i] == TTTT_MACHINE_MARKER) {
             aBoard[i] = kXS_MACHINE_PLAYER;
         }
         else {

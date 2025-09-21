@@ -42,6 +42,7 @@
 
 #define TTTT_HUMAN_MARKER               'X'
 #define TTTT_MACHINE_MARKER             'O'
+#define TTTT_NOBODY_MARKER              '.'
 
 #endif  // TTTTCOMMON_H
 

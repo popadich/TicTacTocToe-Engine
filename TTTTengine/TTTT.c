@@ -38,7 +38,7 @@ struct stack_structure{
     xs_stackptr stack_pointer;
 };
 
-// LOCALS
+//MARK: LOCALS
 xs_player the_winner_is;
 xs_gameboard the_board;
 xs_winpath the_winpath;
@@ -255,11 +255,11 @@ xs_gameboard* getboard(char *pszBoard)
     for(the_move = 0; the_move < TTTT_BOARD_POSITIONS; the_move++)
     {
         if(the_board[the_move] == kXS_HUMAN_PLAYER)
-            pszBoard[the_move] = 'X';
+            pszBoard[the_move] = TTTT_HUMAN_MARKER;
         else if(the_board[the_move] == kXS_MACHINE_PLAYER)
-            pszBoard[the_move] = 'O';
+            pszBoard[the_move] = TTTT_MACHINE_MARKER;
         else if(the_board[the_move] == kXS_NOBODY_PLAYER)
-            pszBoard[the_move] = '_';
+            pszBoard[the_move] = TTTT_NOBODY_MARKER;
     }
     pszBoard[TTTT_BOARD_POSITIONS] = '\0';
 
