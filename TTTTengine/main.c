@@ -64,6 +64,9 @@ bool verboseflag = false;
 bool setweightsflag = false;
 TTTT_WeightsTable new_weights;
 
+// Function declarations
+int count_moves_from_board(const char *board_string, char player_char);
+
 void print_stringrep(char *theBoard) {
     int i = 0;
     for (i = 0; i < 64; i++) {
@@ -251,6 +254,16 @@ void generative_mode(TTTT_GameBoardStringRep pszGameBoard, char *human_moves) {
     }
 }
 
+bool is_board_full(void) {
+    TTTT_GameBoardStringRep board_string;
+    TTTT_GetBoard(board_string);
+    
+    int human_moves = count_moves_from_board(board_string, TTTT_HUMAN_MARKER);
+    int machine_moves = count_moves_from_board(board_string, TTTT_MACHINE_MARKER);
+    
+    return (human_moves + machine_moves) >= TTTT_BOARD_POSITIONS;
+}
+
 bool announce_winner(TTTT_Return aWinner) {
     bool game_over = false;
 
@@ -272,7 +285,15 @@ bool announce_winner(TTTT_Return aWinner) {
         break;
 
     case kTTTT_NOBODY:
+        // Check if board is full (draw condition)
         game_over = false;
+        if (is_board_full()) {
+            if (!quiteflag)
+                printf("\nGame Over:  Draw - Board is Full\n");
+            else
+                printf("game_over");
+            game_over = true;
+        }
         break;
     }
     return game_over;
