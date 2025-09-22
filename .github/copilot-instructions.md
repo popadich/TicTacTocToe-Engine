@@ -28,7 +28,9 @@ Board positions are **0-based indices** (0-63). String representation uses `'X'`
 **Multi-platform builds** supported:
 - **Linux/Unix**: `make` → produces `tttt` executable
 - **macOS/Xcode**: Use `.xcodeproj` with manual argument setup (`-p` flag in scheme)
-- **VS Code**: Use `C/C++: g++ build active file` task for individual files
+- **VS Code**: Use `C/C++: g++ build active file` task for individual files, or preferably the standard `make clean && make` workflow
+
+Build system uses simple `makefile` with gcc compiler flags: `-g -O2 -Wall -c`. Object files are generated in the `TTTTengine/` directory alongside source files.
 
 Always build with: `make clean && make` to ensure clean compilation.
 
@@ -55,8 +57,11 @@ result = subprocess.run([tttt_path, '-t', player, board_string, '-q'],
 move_num, new_board = result.stdout.strip().split(maxsplit=1)
 ```
 
-- `functional.py` - Regression testing with expected output validation
+**Test Automation Structure**:
+- `functional.py` - Regression testing using `test_cases` array with expected outputs
 - `tournament.py` - Automated game simulation (human vs machine alternating moves)
+- Tests assume `tttt` executable exists in project root (build first with `make`)
+- Use `python3 functional.py` to run all regression tests after changes
 
 ## AI & Heuristic System
 
