@@ -32,6 +32,12 @@
 #include <stdio.h>
 #include <stdlib.h>    // for random
 #include <time.h>      // for time()
+
+// Include libbsd headers when available on Linux
+#if defined(__linux__) && defined(HAVE_ARC4RANDOM)
+    #include <bsd/stdlib.h>  // for arc4random on Linux with libbsd
+#endif
+
 #include "TTTT.h"
 
 // Cross-platform random number generation

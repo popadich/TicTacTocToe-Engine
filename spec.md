@@ -41,6 +41,8 @@ make
 ./tttt -t m "................................................................" -r -q
 ```
 
+**Note**: The `linux-bsd` build includes `<bsd/stdlib.h>` for proper `arc4random()` declarations.
+
 ## Configuration File Formatx4 3D Tic-Tac-Toe engine. The system enables automated tournaments between different AI weight matrix configurations with comprehensive reporting and analysis.
 
 ## System Architecture

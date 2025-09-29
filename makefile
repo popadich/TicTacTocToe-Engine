@@ -6,9 +6,10 @@ LIBS =
 
 # Platform-specific settings for randomization
 # Default: BSD systems (macOS, FreeBSD, etc.) use built-in arc4random
-# Linux with libbsd: make linux-bsd
+# Linux with libbsd: make linux-bsd (requires libbsd-dev package)
 # Linux standard: make linux (uses rand())
 # Windows/other: make standard (uses rand())
+# Note: linux-bsd includes <bsd/stdlib.h> for arc4random declarations
 
 # Source directory
 SRC_DIR = TTTTengine
