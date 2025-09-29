@@ -1,0 +1,5 @@
+rank,matrix_label,win_rate,total_wins,total_losses,total_ties,total_games,description
+1,default,0.5000,15,10,5,30,
+2,aggressive,0.5000,15,10,5,30,
+3,defensive,0.3333,10,20,0,30,
+4,balanced,0.3333,10,10,10,30,

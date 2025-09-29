@@ -1,0 +1,7 @@
+matrix1_label,matrix2_label,total_games,matrix1_wins,matrix2_wins,ties,matrix1_win_rate,matrix2_win_rate,tie_rate,matrix1_as_first_wins,matrix2_as_first_wins,average_game_duration,average_move_count,first_player_advantage
+default,aggressive,10,5,5,0,0.5000,0.5000,0.0000,0,0,0.034,18.00,-0.500000
+default,defensive,10,5,5,0,0.5000,0.5000,0.0000,5,5,0.037,20.00,0.500000
+default,balanced,10,5,0,5,0.5000,0.0000,0.5000,0,0,0.084,46.00,-0.500000
+aggressive,defensive,10,5,5,0,0.5000,0.5000,0.0000,5,5,0.030,16.00,0.500000
+aggressive,balanced,10,5,0,5,0.5000,0.0000,0.5000,0,0,0.078,42.00,-0.500000
+defensive,balanced,10,0,10,0,0.0000,1.0000,0.0000,0,5,0.034,18.50,0.000000

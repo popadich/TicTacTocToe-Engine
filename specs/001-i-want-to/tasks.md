@@ -41,34 +41,34 @@
 - Configuration and sample files in project root
 
 ## Phase 3.1: Setup
-- [ ] T001 Create project structure: `tournament_system/` directory with `__init__.py`
-- [ ] T002 [P] Create sample CSV configuration file `sample_tournament_config.csv` with 4 weight matrices
-- [ ] T003 [P] Create tournament results output directory structure
+- [x] T001 Create project structure: `tournament_system/` directory with `__init__.py`
+- [x] T002 [P] Create sample CSV configuration file `sample_tournament_config.csv` with 4 weight matrices
+- [x] T003 [P] Create tournament results output directory structure
 
 ## Phase 3.2: Core Data Models
-- [ ] T004 [P] WeightMatrix model in `tournament_system/models/weight_matrix.py`
-- [ ] T005 [P] GameResult model in `tournament_system/models/game_result.py`
-- [ ] T006 [P] MatchupResult model in `tournament_system/models/matchup_result.py`
-- [ ] T007 [P] TournamentConfiguration model in `tournament_system/models/tournament_config.py`
-- [ ] T008 [P] TournamentReport model in `tournament_system/models/tournament_report.py`
-- [ ] T009 Create models `__init__.py` to export all model classes
+- [x] T004 [P] WeightMatrix model in `tournament_system/models/weight_matrix.py`
+- [x] T005 [P] GameResult model in `tournament_system/models/game_result.py`
+- [x] T006 [P] MatchupResult model in `tournament_system/models/matchup_result.py`
+- [x] T007 [P] TournamentConfiguration model in `tournament_system/models/tournament_config.py`
+- [x] T008 [P] TournamentReport model in `tournament_system/models/tournament_report.py`
+- [x] T009 Create models `__init__.py` to export all model classes
 
 ## Phase 3.3: Engine Communication
-- [ ] T010 GameRunner implementation in `tournament_system/game_runner.py`
-- [ ] T011 Engine validation and error handling in GameRunner
-- [ ] T012 Weight matrix formatting for subprocess communication
+- [x] T010 GameRunner implementation in `tournament_system/game_runner.py`
+- [x] T011 Engine validation and error handling in GameRunner
+- [x] T012 Weight matrix formatting for subprocess communication
 
 ## Phase 3.4: Tournament Orchestration
-- [ ] T013 TournamentManager implementation in `tournament_system/tournament_manager.py`
-- [ ] T014 CSV configuration loading and validation
-- [ ] T015 Round-robin tournament scheduling logic
-- [ ] T016 Game execution coordination with GameRunner
+- [x] T013 TournamentManager implementation in `tournament_system/tournament_manager.py`
+- [x] T014 CSV configuration loading and validation
+- [x] T015 Round-robin tournament scheduling logic
+- [x] T016 Game execution coordination with GameRunner
 
 ## Phase 3.5: Report Generation
-- [ ] T017 [P] JSON report formatter in `tournament_system/reports/json_formatter.py`
-- [ ] T018 [P] Text report formatter in `tournament_system/reports/text_formatter.py`
-- [ ] T019 [P] CSV report formatter in `tournament_system/reports/csv_formatter.py`
-- [ ] T020 Report generation orchestration in TournamentManager
+- [x] T017 [P] JSON report formatter in `tournament_system/reports/json_formatter.py`
+- [x] T018 [P] Text report formatter in `tournament_system/reports/text_formatter.py`
+- [x] T019 [P] CSV report formatter in `tournament_system/reports/csv_formatter.py`
+- [x] T020 Report generation orchestration in TournamentManager
 
 ## Phase 3.6: CLI Interface
 - [ ] T021 Main CLI script `tournament_runner.py` in project root
