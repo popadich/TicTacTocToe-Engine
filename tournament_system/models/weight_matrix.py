@@ -28,23 +28,80 @@ class WeightMatrix:
             
         Raises:
             ValueError: If weights list is not exactly 25 integers
-            ValueError: If label contains commas (CSV incompatible)
+            ValueError: If label contains invalid characters
         """
-        if len(weights) != 25:
-            raise ValueError(f"Weights must contain exactly 25 values, got {len(weights)}")
+        # Validate label
+        self._validate_label(label)
         
-        if not all(isinstance(w, int) for w in weights):
-            raise ValueError("All weights must be integers")
-            
-        if "," in label:
-            raise ValueError("Label cannot contain commas (CSV compatibility)")
-            
-        if not label.strip():
-            raise ValueError("Label cannot be empty")
+        # Validate weights
+        self._validate_weights(weights)
             
         self.label = label.strip()
         self.weights = weights.copy()
         self.description = description.strip() if description else None
+        
+    def _validate_label(self, label: str) -> None:
+        """Validate label format and content."""
+        if not isinstance(label, str):
+            raise ValueError(f"Label must be a string, got {type(label).__name__}: {label}")
+            
+        if not label or not label.strip():
+            raise ValueError("Label cannot be empty or whitespace-only")
+            
+        label = label.strip()
+        
+        # Check for problematic characters
+        invalid_chars = [',', '"', '\n', '\r', '\t']
+        found_chars = [char for char in invalid_chars if char in label]
+        if found_chars:
+            char_names = {'\\n': 'newline', '\\r': 'carriage return', '\\t': 'tab', ',': 'comma', '"': 'quote'}
+            found_names = [char_names.get(char, f"'{char}'") for char in found_chars]
+            raise ValueError(f"Label contains invalid characters: {', '.join(found_names)}. "
+                           f"Label: '{label}'")
+        
+        # Check length
+        if len(label) > 50:
+            raise ValueError(f"Label too long ({len(label)} chars), maximum 50 characters: '{label[:20]}...'")
+            
+        # Check for reasonable content
+        if label.isspace():
+            raise ValueError("Label cannot contain only whitespace characters")
+            
+    def _validate_weights(self, weights: List) -> None:
+        """Validate weight list format and values."""
+        if not isinstance(weights, (list, tuple)):
+            raise ValueError(f"Weights must be a list or tuple, got {type(weights).__name__}")
+            
+        if len(weights) != 25:
+            raise ValueError(f"Weights must contain exactly 25 values (5x5 matrix), got {len(weights)}. "
+                           f"Expected: 25, Received: {len(weights)}")
+        
+        # Check types and ranges
+        non_numeric = []
+        out_of_range = []
+        
+        for i, weight in enumerate(weights):
+            if not isinstance(weight, (int, float)):
+                non_numeric.append(f"position {i}: {type(weight).__name__} '{weight}'")
+            else:
+                # Convert float to int if it's a whole number
+                if isinstance(weight, float):
+                    if weight.is_integer():
+                        weights[i] = int(weight)
+                    else:
+                        raise ValueError(f"Weight at position {i} is not an integer: {weight}")
+                        
+                # Check reasonable range
+                if not -1000 <= weight <= 1000:
+                    out_of_range.append(f"position {i}: {weight}")
+        
+        if non_numeric:
+            raise ValueError(f"All weights must be numeric. Non-numeric values found at: {', '.join(non_numeric[:3])}"
+                           + ("..." if len(non_numeric) > 3 else ""))
+                           
+        if out_of_range:
+            raise ValueError(f"Weights should be in range [-1000, 1000]. Out of range values: {', '.join(out_of_range[:3])}"
+                           + ("..." if len(out_of_range) > 3 else ""))
         
     def to_command_string(self) -> str:
         """
@@ -78,10 +135,35 @@ class WeightMatrix:
         Raises:
             ValueError: If weight conversion fails or count is wrong
         """
-        try:
-            weights = [int(w.strip()) for w in weight_values]
-        except ValueError as e:
-            raise ValueError(f"Invalid weight value in CSV: {e}")
+        if len(weight_values) != 25:
+            raise ValueError(f"Expected 25 weight values, got {len(weight_values)}")
+        
+        weights = []
+        conversion_errors = []
+        
+        for i, weight_str in enumerate(weight_values):
+            weight_str = weight_str.strip()
+            
+            if not weight_str:
+                conversion_errors.append(f"position {i}: empty value")
+                continue
+                
+            try:
+                # Try to convert to float first, then to int if it's a whole number
+                weight_float = float(weight_str)
+                if weight_float.is_integer():
+                    weights.append(int(weight_float))
+                else:
+                    # Allow floats but warn about precision loss
+                    weights.append(int(round(weight_float)))
+            except ValueError:
+                conversion_errors.append(f"position {i}: '{weight_str}' is not a valid number")
+        
+        if conversion_errors:
+            error_summary = ', '.join(conversion_errors[:3])
+            if len(conversion_errors) > 3:
+                error_summary += f" (and {len(conversion_errors) - 3} more)"
+            raise ValueError(f"Weight conversion errors: {error_summary}")
             
         return cls(label, weights)
         

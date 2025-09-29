@@ -225,17 +225,47 @@ def run_tournament(args) -> int:
         Exit code (0 for success, 1 for error)
     """
     try:
-        # Initialize tournament manager
+        # Initialize tournament manager with enhanced error handling
         print("Initializing tournament manager...")
-        manager = TournamentManager(args.config, args.output_dir)
+        
+        try:
+            manager = TournamentManager(args.config, args.output_dir)
+        except FileNotFoundError as e:
+            print(f"✗ Configuration file error: {e}", file=sys.stderr)
+            print(f"  Please check that the file exists: {args.config}", file=sys.stderr)
+            return 1
+        except PermissionError as e:
+            print(f"✗ Permission error: {e}", file=sys.stderr)
+            print(f"  Please check file permissions for: {args.config}", file=sys.stderr)
+            return 1
+        except ValueError as e:
+            print(f"✗ Configuration validation error:", file=sys.stderr)
+            print(f"  {e}", file=sys.stderr)
+            print(f"\n  Please check the CSV format and data values in: {args.config}", file=sys.stderr)
+            return 1
+        except Exception as e:
+            print(f"✗ Unexpected error loading configuration: {e}", file=sys.stderr)
+            if args.verbose:
+                import traceback
+                traceback.print_exc()
+            return 1
         
         # Update engine path if specified
         if args.engine_path != './tttt':
-            manager.game_runner.engine_path = args.engine_path
-            manager.game_runner._validate_engine_exists()
+            try:
+                manager.game_runner.engine_path = args.engine_path
+                manager.game_runner._validate_engine_exists()
+            except EngineNotFoundError as e:
+                print(f"✗ Engine not found: {e}", file=sys.stderr)
+                print(f"  Please check the engine path: {args.engine_path}", file=sys.stderr)
+                return 1
             
         # Update output formats
-        manager.config.output_formats = args.formats
+        try:
+            manager.config.output_formats = args.formats
+        except ValueError as e:
+            print(f"✗ Invalid output format: {e}", file=sys.stderr)
+            return 1
         
         print("Configuration loaded successfully.")
         print()
