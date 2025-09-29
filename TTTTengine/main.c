@@ -62,6 +62,7 @@ typedef struct {
 bool quiteflag = false;
 bool verboseflag = false;
 bool setweightsflag = false;
+bool randomizeflag = false;
 TTTT_WeightsTable new_weights;
 
 // Function declarations
@@ -423,7 +424,7 @@ void turn_mode(const char *who_moves, const char *string_rep) {
     TTTT_GameBoardStringRep newStringRep;
     
     if (*who_moves == 'm') {
-        TTTT_GetBestMove(kTTTT_MACHINE, &aMove);
+        TTTT_MacMove(&aMove);
         TTTT_MakeStringRep(kTTTT_MACHINE, aMove, string_rep, newStringRep);
         if (!quiteflag)
             printf("Machine move: %ld  ", aMove + 1);
@@ -472,6 +473,7 @@ void print_usage(void) {
     fprintf(stderr, "  -w, --weights <matrix>       Set the heuristic weights.\n");
     fprintf(stderr, "  -m, --machine-moves <list>   List of machine moves for generation.\n");
     fprintf(stderr, "  -h, --human-moves <list>     List of human moves for generation.\n");
+    fprintf(stderr, "  -r, --randomize              Enable randomized move selection.\n");
     fprintf(stderr, "  -v, --verbose                Enable verbose output.\n");
     fprintf(stderr, "  -q, --quiet                  Suppress all output.\n");
     fprintf(stderr, "      --help                   Display this help and exit.\n");
@@ -497,6 +499,7 @@ tttt_args parse_arguments(int argc, char *argv[]) {
         {"weights",       required_argument, 0, 'w'},
         {"machine-moves", required_argument, 0, 'm'},
         {"human-moves",   required_argument, 0, 'h'},
+        {"randomize",     no_argument,       0, 'r'},
         {"verbose",       no_argument,       0, 'v'},
         {"quiet",         no_argument,       0, 'q'},
         {"help",          no_argument,       0, 0},
@@ -506,7 +509,7 @@ tttt_args parse_arguments(int argc, char *argv[]) {
 
     while (1) {
         int option_index = 0;
-        c = getopt_long(argc, argv, "e:gp:t:w:m:h:vq", long_options, &option_index);
+        c = getopt_long(argc, argv, "e:gp:t:w:m:h:rvq", long_options, &option_index);
 
         if (c == -1)
             break;
@@ -551,6 +554,9 @@ tttt_args parse_arguments(int argc, char *argv[]) {
                 break;
             case 'h':
                 args.human_moves = optarg;
+                break;
+            case 'r':
+                randomizeflag = true;
                 break;
             case 'v':
                 verboseflag = true;
@@ -637,6 +643,10 @@ int main(int argc, char *argv[]) {
 
     if (setweightsflag == true) {
         set_weightsmatrix(args.weights_matrix);
+    }
+
+    if (randomizeflag == true) {
+        TTTT_SetRandomize(true);
     }
 
     switch (args.mode)

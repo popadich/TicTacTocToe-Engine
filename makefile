@@ -4,6 +4,12 @@ CFLAGS = -g -O2 -Wall -c
 LDFLAGS =
 LIBS =
 
+# Platform-specific settings for randomization
+# Default: BSD systems (macOS, FreeBSD, etc.) use built-in arc4random
+# Linux with libbsd: make linux-bsd
+# Linux standard: make linux (uses rand())
+# Windows/other: make standard (uses rand())
+
 # Source directory
 SRC_DIR = TTTTengine
 
@@ -31,8 +37,17 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
 
+# Platform-specific targets
+linux-bsd: CFLAGS += -DHAVE_ARC4RANDOM
+linux-bsd: LIBS += -lbsd
+linux-bsd: all
+
+linux: all
+
+standard: all
+
 # Phony targets
-.PHONY: all clean install
+.PHONY: all clean install linux-bsd linux standard
 
 # Install rule
 install: all

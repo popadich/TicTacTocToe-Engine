@@ -31,7 +31,28 @@
 
 #include <stdio.h>
 #include <stdlib.h>    // for random
+#include <time.h>      // for time()
 #include "TTTT.h"
+
+// Cross-platform random number generation
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
+    // BSD systems have arc4random built-in
+    #define TTTT_RANDOM() arc4random()
+    #define TTTT_SEED_RANDOM() // arc4random doesn't need seeding
+#elif defined(__linux__)
+    // Linux may have arc4random with -lbsd, otherwise use rand()
+    #ifdef HAVE_ARC4RANDOM
+        #define TTTT_RANDOM() arc4random()
+        #define TTTT_SEED_RANDOM() // arc4random doesn't need seeding
+    #else
+        #define TTTT_RANDOM() ((unsigned int)rand())
+        #define TTTT_SEED_RANDOM() srand((unsigned int)time(NULL))
+    #endif
+#else
+    // Other platforms (Windows, etc.) use standard rand()
+    #define TTTT_RANDOM() ((unsigned int)rand())
+    #define TTTT_SEED_RANDOM() srand((unsigned int)time(NULL))
+#endif
 
 struct stack_structure{
     xs_played_move stack_array[64];
@@ -46,6 +67,7 @@ xs_pathcount the_path_counts_mac;
 xs_pathcount the_path_counts_human;
 xs_weighttab the_weights;
 bool randomized = false;
+bool random_seeded = false;
 struct stack_structure firstpass_stack;
 struct stack_structure bestmoves_stack;
 struct stack_structure *st;
@@ -289,6 +311,12 @@ void setweights(xs_weighttab weights)
 
 void setrandomize(bool randomize){
     randomized = randomize;
+    
+    // Seed random number generator on first use
+    if (randomize && !random_seeded) {
+        TTTT_SEED_RANDOM();
+        random_seeded = true;
+    }
 }
 
 // this is currently 0 based
@@ -376,7 +404,15 @@ xs_move machinemoverandomized(void) {
         // this stack should always contain at least one move
         // if the stack is empty it means big trouble
         // printf("size: %d\n", size_movestack(bm));
-        // xs_stackptr pickedmove = (arc4random() % size_movestack(bm)) + 1;
+
+        if (size_movestack(bm) < 1) {
+            fprintf(stderr, "Application error: No valid moves available in best moves (bm) stack.\n");
+            clear_movestack(bm);
+            clear_movestack(st);
+            return kXS_UNDEFINED_MOVE;
+        }
+
+        pickedmove = (TTTT_RANDOM() % size_movestack(bm)) + 1;
         // printf("random pick: %d\n",pickedmove);
 
         while (pop_from_movestack(bm, &goodmove) && pickedmove > 0) {

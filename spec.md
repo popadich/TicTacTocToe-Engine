@@ -2,7 +2,46 @@
 
 ## Overview
 
-This document captures the specification, design decisions, and key learnings from implementing a comprehensive tournament system for the 4x4x4 3D Tic-Tac-Toe engine. The system enables automated tournaments between different AI weight matrix configurations with comprehensive reporting and analysis.
+This document captures the specification, design decisions, and key learnings from implementing a comprehensive tournament system for the **Tournament Impact**: Enables meaningful statistical analysis of weight matrix performance
+
+### Cross-Platform Compatibility
+**Challenge**: Random number generation varies across operating systems
+**BSD Systems** (macOS, FreeBSD, OpenBSD, NetBSD): Native `arc4random()` support
+**Linux Systems**: Conditional `arc4random()` (requires `-lbsd`) or fallback to `rand()`
+**Other Platforms** (Windows, etc.): Standard `rand()` with `time()` seeding
+
+**Implementation Strategy**:
+```c
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
+    #define TTTT_RANDOM() arc4random()
+#elif defined(__linux__) && defined(HAVE_ARC4RANDOM)
+    #define TTTT_RANDOM() arc4random()
+#else
+    #define TTTT_RANDOM() ((unsigned int)rand())
+#endif
+```
+
+**Build Considerations**:
+- **BSD systems** (macOS, FreeBSD): `make` - Uses built-in `arc4random()`, no additional setup
+- **Linux with libbsd**: `make linux-bsd` - Requires `libbsd-dev` package, uses `arc4random()`  
+- **Standard Linux**: `make linux` or `make` - Uses standard `rand()` with `time()` seeding
+- **Windows/Other**: `make standard` - Uses standard `rand()` with `time()` seeding
+- **Seeding**: Automatic on first randomization use (except for `arc4random` which doesn't need seeding)
+
+**Installation Requirements**:
+```bash
+# Ubuntu/Debian (for libbsd support):
+sudo apt-get install libbsd-dev
+make linux-bsd
+
+# Standard Linux/Unix:
+make
+
+# Verify randomization:
+./tttt -t m "................................................................" -r -q
+```
+
+## Configuration File Formatx4 3D Tic-Tac-Toe engine. The system enables automated tournaments between different AI weight matrix configurations with comprehensive reporting and analysis.
 
 ## System Architecture
 
@@ -30,8 +69,14 @@ tournament_system/
 
 ### CLI Interface
 
+**Tournament System**:
 - `tournament_runner.py` - Main CLI application with comprehensive argument parsing
 - `sample_tournament_config.csv` - Example configuration with 4 weight matrices
+
+**Engine Enhancements** ✅:
+- `tttt -r` / `tttt --randomize` - Enable randomized move selection among optimal moves
+- Tournament integration: `tournament_runner.py --randomization` passes `-r` flag to engine
+- Cross-platform support: Automatic platform detection for optimal random number generation
 
 ## Design Principles
 
@@ -169,16 +214,22 @@ raise EngineError(f"Move {move_num} (position {position}) was not applied to boa
 
 ## Randomization System Design
 
-### Current State
-**Engine Support**: Internal randomization API (`TTTT_SetRandomize`) exists
-**CLI Gap**: No command-line flag exposed (`-r` not supported)
-**Tournament Implementation**: Parameter accepted but ignored
-**Future Enhancement**: Potential engine CLI extension needed
+### Current State - **IMPLEMENTED** ✅
+**Engine Support**: Internal randomization API (`TTTT_SetRandomize`) with cross-platform compatibility
+**CLI Integration**: Complete `-r`/`--randomize` flag support implemented
+**Tournament Integration**: Full randomization support via subprocess communication
+**Cross-Platform**: BSD (`arc4random`), Linux (`rand`), Windows (`rand`) compatibility
+
+### Implementation Details
+**CLI Flag**: `tttt -t m "board_string" -r` enables randomized move selection
+**Algorithm**: Finds all optimal moves, then randomly selects one using platform-appropriate RNG
+**Platform Detection**: Automatic detection of BSD vs GNU systems with fallback to standard `rand()`
+**Seeding**: Automatic seeding on first use (`time(NULL)` for `rand()`, no seeding needed for `arc4random`)
 
 ### Statistical Implications
 **Without Randomization**: Deterministic outcomes enable reproducible benchmarks
-**With Randomization**: Statistical variance testing, tie-breaking for equal strategies
-**Recommendation**: Engine CLI extension for full randomization support
+**With Randomization**: Statistical variance testing, strategic variety, tie-breaking for equal strategies
+**Tournament Impact**: Enables meaningful statistical analysis of weight matrix performance
 
 ## Configuration File Format
 
@@ -243,7 +294,7 @@ default,"Default engine weights",0,-2,-4,-8,-16,2,0,0,0,0,4,0,1,0,0,8,0,0,0,0,16
 - **Meta-Analysis**: Cross-tournament comparisons
 
 ### 3. Engine Integration
-- **Randomization CLI**: Extend engine command-line interface
+- **~~Randomization CLI~~**: ✅ **COMPLETED** - Full `-r` flag support with cross-platform compatibility
 - **Win Detection**: Direct engine API for game-over conditions
 - **Custom Evaluation**: Alternative scoring metrics
 

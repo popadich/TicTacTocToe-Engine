@@ -26,10 +26,18 @@ This code is meant to compile both on a Mac as an XCode project and on a Linux/U
 
 ### Linux/Unix:
 
-Assuming you have the proper devlopement tools installed, you should be able to cd to the project directory and type make.
-```
+Assuming you have the proper development tools installed, you should be able to cd to the project directory and type make.
+
+```bash
 % cd TicTacTocToe-Engine
-% make
+% make                    # Standard build (works on all platforms)
+```
+
+**Platform-Specific Builds** (for optimal randomization):
+```bash
+% make linux-bsd         # Linux with libbsd (requires: apt install libbsd-dev)
+% make linux             # Standard Linux build  
+% make standard          # Generic build for any platform
 ```
 
 This will compile the source files and create an executable named `tttt`.
@@ -75,6 +83,16 @@ Or play with different heurisitic weights:
     ```bash
     ./tttt  -t m  "......XX.....................................................OOX"
     ```
+
+* **Randomized Move Selection** (New!):
+
+    ```bash
+    # Enable randomization in any mode
+    ./tttt -p h -r                    # Interactive play with randomization
+    ./tttt -t m "..." -r              # Tournament mode with randomized moves
+    ```
+    
+    The `-r`/`--randomize` flag enables random selection among equally optimal moves, useful for tournament analysis and strategic variety testing.
 
 # Development Conventions
 
