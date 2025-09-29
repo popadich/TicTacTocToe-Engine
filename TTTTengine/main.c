@@ -604,9 +604,57 @@ int count_moves_from_board(const char *board_string, char player_char) {
     return count;
 }
 
+bool validate_board_string(const char *board_string) {
+    if (board_string == NULL) {
+        fprintf(stderr, "Error: Board string cannot be NULL.\n");
+        return false;
+    }
+    
+    size_t length = strlen(board_string);
+    if (length != TTTT_BOARD_POSITIONS) {
+        fprintf(stderr, "Error: Board string must be exactly %d characters long, got %zu.\n", 
+                TTTT_BOARD_POSITIONS, length);
+        return false;
+    }
+    
+    // Validate each character
+    for (int i = 0; i < TTTT_BOARD_POSITIONS; i++) {
+        char c = board_string[i];
+        if (c != 'X' && c != 'O' && c != '.') {
+            fprintf(stderr, "Error: Invalid character '%c' at position %d. "
+                           "Only 'X', 'O', and '.' are allowed.\n", c, i);
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+bool validate_player_argument(const char *player) {
+    if (player == NULL) {
+        fprintf(stderr, "Error: Player argument cannot be NULL.\n");
+        return false;
+    }
+    
+    if (strlen(player) != 1) {
+        fprintf(stderr, "Error: Player must be a single character ('h' or 'm'), got '%s'.\n", player);
+        return false;
+    }
+    
+    if (*player != 'h' && *player != 'm') {
+        fprintf(stderr, "Error: Invalid player '%c'. Must be 'h' (human) or 'm' (machine).\n", *player);
+        return false;
+    }
+    
+    return true;
+}
+
 void sanity_check_moves(int human_moves, int machine_moves) {
     if (abs(human_moves - machine_moves) > 1) {
-        fprintf(stderr, "Invalid number of moves. Human moves: %d, Machine moves: %d. The difference cannot be greater than 1.\n", human_moves, machine_moves);
+        fprintf(stderr, "Error: Invalid number of moves. Human moves: %d, Machine moves: %d. "
+                       "The difference cannot be greater than 1.\n", human_moves, machine_moves);
+        fprintf(stderr, "Hint: In 4x4x4 Tic-Tac-Toe, players alternate moves, so move counts "
+                       "should be equal or differ by at most 1.\n");
         exit(EXIT_FAILURE);
     }
 }
@@ -652,12 +700,22 @@ int main(int argc, char *argv[]) {
     switch (args.mode)
     {
     case MODE_PLAY:
+        if (args.who_moves == NULL) {
+            fprintf(stderr, "Error: Player must be specified with '-p' option ('h' or 'm').\n");
+            exit(EXIT_FAILURE);
+        }
+        if (!validate_player_argument(args.who_moves)) {
+            exit(EXIT_FAILURE);
+        }
         interactive_mode(args.who_moves);
         break;
 
     case MODE_EVALUATE:
         if (args.string_rep == NULL) {
-            fprintf(stderr, "Board string representation must be specified with '-e' option.\n");
+            fprintf(stderr, "Error: Board string representation must be specified with '-e' option.\n");
+            exit(EXIT_FAILURE);
+        }
+        if (!validate_board_string(args.string_rep)) {
             exit(EXIT_FAILURE);
         }
         int human_moves_eval = count_moves_from_board(args.string_rep, TTTT_HUMAN_MARKER);
@@ -684,7 +742,13 @@ int main(int argc, char *argv[]) {
 
     case MODE_TURN:
         if (args.who_moves == NULL || args.string_rep == NULL) {
-            fprintf(stderr, "Turn mode requires who moves and board string representation.\n");
+            fprintf(stderr, "Error: Turn mode requires who moves and board string representation.\n");
+            exit(EXIT_FAILURE);
+        }
+        if (!validate_player_argument(args.who_moves)) {
+            exit(EXIT_FAILURE);
+        }
+        if (!validate_board_string(args.string_rep)) {
             exit(EXIT_FAILURE);
         }
         int human_moves_turn = count_moves_from_board(args.string_rep, TTTT_HUMAN_MARKER);
