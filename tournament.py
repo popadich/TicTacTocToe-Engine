@@ -89,36 +89,252 @@ def load_weights_from_file(filename):
     
     return weights
 
-def run_tttt_tournament(player, board, weights=None):
+def validate_tournament_inputs(player, board, weights=None):
     """
-    Execute the 'tttt' engine with optional custom weights.
+    Validate inputs for tournament execution with detailed error reporting.
+    
+    Args:
+        player: Player identifier to validate
+        board: Board string to validate  
+        weights: Optional weight string to validate
+        
+    Returns:
+        tuple: (is_valid, error_message)
+    """
+    # Validate player
+    if not isinstance(player, str):
+        return False, f"Player must be string, got {type(player).__name__}"
+    
+    if player not in ['h', 'm', 'human', 'machine']:
+        return False, f"Player must be 'h', 'm', 'human', or 'machine', got '{player}'"
+    
+    # Validate board
+    if not isinstance(board, str):
+        return False, f"Board must be string, got {type(board).__name__}"
+    
+    if len(board) != 64:
+        return False, f"Board must be exactly 64 characters, got {len(board)}"
+    
+    valid_chars = set('XO.')
+    for i, char in enumerate(board):
+        if char not in valid_chars:
+            return False, f"Invalid character '{char}' at position {i}. Only 'X', 'O', '.' allowed"
+    
+    # Check move balance
+    x_count = board.count('X')
+    o_count = board.count('O')
+    if abs(x_count - o_count) > 1:
+        return False, f"Invalid move counts: X={x_count}, O={o_count} (difference > 1)"
+    
+    # Validate weights if provided
+    if weights is not None:
+        if not isinstance(weights, str):
+            return False, f"Weights must be string, got {type(weights).__name__}"
+        
+        weight_values = weights.split()
+        if len(weight_values) != 25:
+            return False, f"Weights must have 25 values, got {len(weight_values)}"
+        
+        for i, val in enumerate(weight_values):
+            try:
+                int(val)
+            except ValueError:
+                return False, f"Weight {i} is not an integer: '{val}'"
+    
+    return True, ""
+
+def find_tttt_executable():
+    """
+    Locate tttt executable with multiple fallback locations.
+    
+    Returns:
+        str: Path to executable if found, None otherwise
+    """
+    candidates = ['./tttt', './TTTTengine/tttt', 'tttt']
+    
+    for candidate in candidates:
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            # Test executable works
+            try:
+                result = subprocess.run(
+                    [candidate, '--version'], 
+                    capture_output=True, 
+                    text=True, 
+                    timeout=5
+                )
+                if result.returncode == 0:
+                    return candidate
+            except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+                continue
+    
+    return None
+
+def run_tttt_tournament(player, board, weights=None, executable_path=None):
+    """
+    Execute the 'tttt' engine with comprehensive error handling.
     
     Args:
         player: 'h' for human or 'm' for machine
         board: 64-character board string
         weights: Optional weight string (25 space-separated integers)
+        executable_path: Optional path to tttt executable (for testing)
     
     Returns:
-        str: Engine output
+        dict: {'success': bool, 'output': str, 'error': str, 'returncode': int}
     """
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    tttt_path = os.path.join(script_dir, 'tttt')
-    args = ['-t', player, board, '-q']
+    # Input validation
+    valid, error_msg = validate_tournament_inputs(player, board, weights)
+    if not valid:
+        return {
+            'success': False,
+            'output': None,
+            'error': f"Input validation failed: {error_msg}",
+            'returncode': -1
+        }
     
-    # Add weights if provided (typically for human player)
-    if weights and player == 'h':
+    # Find executable (use provided path or search for it)
+    if executable_path:
+        tttt_path = executable_path
+        if not os.path.exists(tttt_path):
+            return {
+                'success': False,
+                'output': None,
+                'error': f"Specified tttt executable not found: {tttt_path}",
+                'returncode': -1
+            }
+    else:
+        tttt_path = find_tttt_executable()
+        if not tttt_path:
+            return {
+                'success': False,
+                'output': None,
+                'error': "tttt executable not found. Please run 'make clean && make' to build it.",
+                'returncode': -1
+            }
+    
+    # Normalize player argument
+    player_arg = 'h' if player in ['h', 'human'] else 'm'
+    
+    # Build command
+    args = [tttt_path, '-t', player_arg, board, '-q']
+    
+    # Add weights if provided
+    if weights:
         args.extend(['-w', weights])
     
     try:
+        # Execute with timeout and comprehensive error capture
         result = subprocess.run(
-            [tttt_path] + args, 
-            capture_output=True, 
-            text=True
+            args,
+            capture_output=True,
+            text=True,
+            timeout=30,  # Generous timeout
+            check=False   # Don't raise on non-zero exit
         )
-    except subprocess.CalledProcessError as e:
-        return e.stdout + e.stderr
-
-    return result.stdout
+        
+        output = result.stdout.strip()
+        error = result.stderr.strip()
+        
+        if result.returncode != 0:
+            error_detail = error if error else "Unknown error (no stderr output)"
+            return {
+                'success': False,
+                'output': output,
+                'error': f"Engine failed (exit code {result.returncode}): {error_detail}",
+                'returncode': result.returncode
+            }
+        
+        if not output:
+            return {
+                'success': False,
+                'output': output,
+                'error': "Engine produced no output",
+                'returncode': result.returncode
+            }
+        
+        # Validate output format (should be "<move> <board>" or "<move> game_over\n<board>")
+        lines = output.split('\n')
+        if len(lines) >= 1:
+            first_line_parts = lines[0].split()
+            if len(first_line_parts) < 2:
+                return {
+                    'success': False,
+                    'output': output,
+                    'error': f"Malformed engine output (expected '<move> <board>'): '{output}'",
+                    'returncode': result.returncode
+                }
+            
+            try:
+                move_num = int(first_line_parts[0])
+            except ValueError:
+                return {
+                    'success': False,
+                    'output': output,
+                    'error': f"Invalid move number in output: '{first_line_parts[0]}'",
+                    'returncode': result.returncode
+                }
+                
+            # Validate board string (should be 64 characters of X, O, .)
+            board_part = first_line_parts[1] if len(first_line_parts) > 1 else ""
+            if not board_part or len(board_part) != 64:
+                return {
+                    'success': False,
+                    'output': output,
+                    'error': f"Invalid board string in output (expected 64 chars): '{board_part}'",
+                    'returncode': result.returncode
+                }
+            
+            # Check board contains only valid characters
+            if not all(c in 'XO.' for c in board_part):
+                return {
+                    'success': False,
+                    'output': output,
+                    'error': f"Board contains invalid characters: '{board_part}'",
+                    'returncode': result.returncode
+                }
+        
+        return {
+            'success': True,
+            'output': output,
+            'error': None,
+            'returncode': result.returncode
+        }
+        
+    except subprocess.TimeoutExpired:
+        return {
+            'success': False,
+            'output': None,
+            'error': "Engine command timed out after 30 seconds",
+            'returncode': -1
+        }
+    except FileNotFoundError:
+        return {
+            'success': False,
+            'output': None,
+            'error': f"Executable not found: {tttt_path}",
+            'returncode': -1
+        }
+    except PermissionError:
+        return {
+            'success': False,
+            'output': None,
+            'error': f"Permission denied executing: {tttt_path}",
+            'returncode': -1
+        }
+    except MemoryError:
+        return {
+            'success': False,
+            'output': None,
+            'error': "Insufficient memory to run engine",
+            'returncode': -1
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'output': None,
+            'error': f"Unexpected error: {str(e)}",
+            'returncode': -1
+        }
 
 def check_game_over(output):
     """Check if the game is over based on tournament output"""
@@ -178,7 +394,15 @@ def main():
     
     while not game_over:
         # Human move (with optional custom weights)
-        human_move = run_tttt_tournament('h', new_board, selected_weights)
+        human_result = run_tttt_tournament('h', new_board, selected_weights)
+        
+        if not human_result['success']:
+            print(f"Error in human move: {human_result['error']}")
+            winner = "Error - Tournament stopped"
+            game_over = True
+            break
+        
+        human_move = human_result['output']
         
         # Check if game is over after human move
         if check_game_over(human_move):
@@ -194,13 +418,27 @@ def main():
             break
         
         # Parse normal human move output
-        move_str, new_board = human_move.strip().split(maxsplit=1)
-        move = int(move_str)
-        print(turn * 2 - 1, 'H:', move, new_board)
-        print('')
+        try:
+            move_str, new_board = human_move.strip().split(maxsplit=1)
+            move = int(move_str)
+            print(turn * 2 - 1, 'H:', move, new_board)
+            print('')
+        except (ValueError, IndexError) as e:
+            print(f"Error parsing human move output '{human_move}': {e}")
+            winner = "Error - Invalid move output"
+            game_over = True
+            break
 
         # Machine move
-        machine_move = run_tttt_tournament('m', new_board)
+        machine_result = run_tttt_tournament('m', new_board)
+        
+        if not machine_result['success']:
+            print(f"Error in machine move: {machine_result['error']}")
+            winner = "Error - Tournament stopped"
+            game_over = True
+            break
+        
+        machine_move = machine_result['output']
         
         # Check if game is over after machine move
         if check_game_over(machine_move):
@@ -216,10 +454,16 @@ def main():
             break
         
         # Parse normal machine move output
-        move_str, new_board = machine_move.strip().split(maxsplit=1)
-        move = int(move_str)
-        print(turn * 2, 'M:', move, new_board)
-        print('')
+        try:
+            move_str, new_board = machine_move.strip().split(maxsplit=1)
+            move = int(move_str)
+            print(turn * 2, 'M:', move, new_board)
+            print('')
+        except (ValueError, IndexError) as e:
+            print(f"Error parsing machine move output '{machine_move}': {e}")
+            winner = "Error - Invalid move output"
+            game_over = True
+            break
         
         turn += 1
         

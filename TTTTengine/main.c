@@ -102,7 +102,7 @@ void print_board(bool game_over) {
     print_board_stringrep(pszGameBoard);
 }
 
-void set_weightsmatrix(const char *weightsmatrix) {
+int set_weightsmatrix(const char *weightsmatrix) {
     int scanError;
     int r1c1, r1c2, r1c3, r1c4, r1c5;
     int r2c1, r2c2, r2c3, r2c4, r2c5;
@@ -116,17 +116,11 @@ void set_weightsmatrix(const char *weightsmatrix) {
         &r3c1, &r3c2, &r3c3, &r3c4, &r3c5, &r4c1, &r4c2, &r4c3, &r4c4, &r4c5,
         &r5c1, &r5c2, &r5c3, &r5c4, &r5c5);
     if (scanError != 25) {
-        printf("Problem with weights!\n");
-        printf("Matrix is: %d %d %d %d %d for first row0\n", r1c1, r1c2,
-               r1c3, r1c4, r1c5);
-        printf("Matrix is: %d %d %d %d %d for second row\n", r2c1, r2c2,
-               r2c3, r2c4, r2c5);
-        printf("Matrix is: %d %d %d %d %d for third row\n", r3c1, r3c2,
-               r3c3, r3c4, r3c5);
-        printf("Matrix is: %d %d %d %d %d for fourth frown", r4c1, r4c2,
-               r4c3, r4c4, r4c5);
-        printf("Matrix is: %d %d %d %d %d for fourth row\n", r5c1, r5c2,
-               r5c3, r5c4, r5c5);
+        fprintf(stderr, "Error: Invalid weight matrix format.\n");
+        fprintf(stderr, "Expected: 25 space-separated integers (5x5 matrix)\n");
+        fprintf(stderr, "Example: '0 -2 -4 -8 -16 2 0 0 0 0 4 0 1 0 0 8 0 0 0 0 16 0 0 0 0'\n");
+        fprintf(stderr, "Got %d values from: '%s'\n", scanError, weightsmatrix);
+        return -1;  // Return error
     }
 
     if (verboseflag) {
@@ -171,6 +165,8 @@ void set_weightsmatrix(const char *weightsmatrix) {
     new_weights[4][2] = r5c3;
     new_weights[4][3] = r5c4;
     new_weights[4][4] = r5c5;
+    
+    return 0;  // Success
 }
 
 long evaluate_stringrep(const TTTT_GameBoardStringRep pszGameBoard) {
@@ -690,7 +686,9 @@ int main(int argc, char *argv[]) {
     }
 
     if (setweightsflag == true) {
-        set_weightsmatrix(args.weights_matrix);
+        if (set_weightsmatrix(args.weights_matrix) != 0) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (randomizeflag == true) {
