@@ -47,8 +47,18 @@ linux: all
 
 standard: all
 
+# Testing targets
+test: all
+	python3 functional.py
+
+integration-test: all
+	python3 integration_test_suite.py
+
+quick-test: all
+	./quick_integration_test.sh
+
 # Phony targets
-.PHONY: all clean install linux-bsd linux standard
+.PHONY: all clean install linux-bsd linux standard test integration-test quick-test
 
 # Install rule
 install: all

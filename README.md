@@ -42,6 +42,13 @@ Assuming you have the proper development tools installed, you should be able to 
 
 This will compile the source files and create an executable named `tttt`.
 
+**Testing the Build:**
+```bash
+% make test                    # Run functional tests
+% make quick-test             # Run essential integration tests (30s)
+% make integration-test       # Run full integration test suite (30s)
+```
+
 ### Xcode:
 
 You have to set the argument on the executable otherwise there won't be much to see. 
