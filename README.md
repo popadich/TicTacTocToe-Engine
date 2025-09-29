@@ -94,6 +94,21 @@ Or play with different heurisitic weights:
     
     The `-r`/`--randomize` flag enables random selection among equally optimal moves, useful for tournament analysis and strategic variety testing.
 
+* **Tournament System Examples**:
+
+    ```bash
+    # Quick system test
+    python3 tournament_runner.py -c examples/quick_test.csv -i 5
+    
+    # Strategy comparison 
+    python3 tournament_runner.py -c examples/aggressive_strategies.csv -i 15 --randomization
+    
+    # Run complete example gallery
+    ./run_example_gallery.sh
+    ```
+    
+    See `examples/` directory for ready-to-use tournament configurations and comprehensive documentation.
+
 # Development Conventions
 
 The code follows a consistent style, with clear separation of concerns between the engine and the UI. Header files are used to define public interfaces for the different modules. The code is well-commented, and the license is included in the header of each source file.

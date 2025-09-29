@@ -322,6 +322,7 @@ default,"Default engine weights",0,-2,-4,-8,-16,2,0,0,0,0,4,0,1,0,0,8,0,0,0,0,16
 - **Custom Evaluation**: Alternative scoring metrics
 
 ### 4. User Experience
+- **~~Example Tournament Gallery~~**: ✅ **COMPLETED** - 5 ready-to-use configurations with automation script
 - **Interactive Configuration**: Web-based tournament setup
 - **Real-time Visualization**: Live tournament progress graphs
 - **Result Analysis**: Interactive exploration of tournament data
