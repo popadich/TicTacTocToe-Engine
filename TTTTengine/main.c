@@ -146,7 +146,7 @@ int set_weightsmatrix(const char *weightsmatrix) {
     new_weights[1][1] = r2c2;
     new_weights[1][2] = r2c3;
     new_weights[1][3] = r2c4;
-    new_weights[1][4] = r3c5;
+    new_weights[1][4] = r2c5;
 
     new_weights[2][0] = r3c1;
     new_weights[2][1] = r3c2;

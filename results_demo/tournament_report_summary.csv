@@ -1,0 +1,12 @@
+metric,value
+config_file,examples/aggressive_strategies.csv
+matrices_count,4
+iterations_per_matchup,3
+randomization_enabled,True
+total_games_played,36
+expected_games,36
+tournament_duration_seconds,2.060
+games_per_hour,62907.61
+start_time,2025-09-29T16:06:12.454343
+end_time,2025-09-29T16:06:14.514507
+overall_first_player_advantage,-0.083333
