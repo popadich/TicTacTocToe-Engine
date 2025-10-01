@@ -1,5 +1,5 @@
 /*
- *  TTTTapi.h
+ *  main.c
  *  TTTTengine
  *
  *  Created by Alex Popadich on 4/5/10.
